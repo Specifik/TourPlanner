@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="at.fhtw.medialib.view.MediaDetailsController">
+    <ToolBar>
+        <Label text="%MediaDetails_Name"/>
+        <TextField fx:id="nameTextField" HBox.hgrow="ALWAYS"/>
+    </ToolBar>
+    <SplitPane dividerPositions="0.5" orientation="VERTICAL" VBox.vgrow="ALWAYS">
+        <TabPane tabClosingPolicy="UNAVAILABLE">
+            <Tab text="%MediaDetails_Tab_Content">
+                <AnchorPane/>
+            </Tab>
+            <Tab text="%MediaDetails_Tab_Description">
+                <TextArea/>
+            </Tab>
+        </TabPane>
+    </SplitPane>
+</VBox>

@@ -1,0 +1,7 @@
+# Default ignored files
+/target/
+/BL/target/
+/DAL/target/
+/FXApp/target/
+
+/.idea/
