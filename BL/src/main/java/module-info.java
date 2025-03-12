@@ -3,5 +3,5 @@ module medialibbl {
     requires java.desktop;
     requires java.sql;
 
-    exports at.fhtw.medialib.bl;
+    exports at.fhtw.tourplanner.bl;
 }

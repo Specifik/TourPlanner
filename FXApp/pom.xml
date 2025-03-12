@@ -86,7 +86,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>${javafx.maven.plugin.version}</version>
                 <configuration>
-                    <mainClass>at.fhtw.medialib.MediaLibApplication</mainClass>
+                    <mainClass>at.fhtw.tourplanner.TourPlannerApplication</mainClass>
                 </configuration>
             </plugin>
             <plugin>

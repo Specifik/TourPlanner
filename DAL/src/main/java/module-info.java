@@ -1,7 +1,7 @@
 module medialibdal {
     requires java.desktop;
 
-    exports at.fhtw.medialib.dal;
-    exports at.fhtw.medialib.model;
+    exports at.fhtw.tourplanner.dal;
+    exports at.fhtw.tourplanner.model;
 
 }

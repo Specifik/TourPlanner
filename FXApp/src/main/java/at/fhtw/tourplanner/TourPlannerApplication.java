@@ -1,4 +1,4 @@
-package at.fhtw.medialib;
+package at.fhtw.tourplanner;
 
 import javafx.application.Application;
 import javafx.scene.Parent;
@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Locale;
 
-public class MediaLibApplication extends Application {
+public class TourPlannerApplication extends Application {
 
     public static void main(String[] args) {
         launch(args);
@@ -21,7 +21,7 @@ public class MediaLibApplication extends Application {
         Scene scene = new Scene(root);
 
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Media Library");
+        primaryStage.setTitle("Tour planner");
         primaryStage.show();
     }
 }

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="at.fhtw.tourplanner.view.MainWindowController"
+      prefHeight="700.0" prefWidth="1000.0">
+    <MenuBar>
+        <Menu text="%Menu_File">
+            <MenuItem text="%Menu_File_Import"/>
+            <MenuItem text="%Menu_File_Export"/>
+            <MenuItem text="%Menu_File_Quit" onAction="#onMenuFileQuitClicked"/>
+        </Menu>
+        <Menu text="%Menu_Edit">
+            <MenuItem text="%Menu_Edit_Duplicate"/>
+        </Menu>
+        <Menu text="%Menu_Options">
+            <MenuItem mnemonicParsing="false" text="%Menu_Options_Settings"/>
+        </Menu>
+        <Menu text="%Menu_Help">
+            <MenuItem text="%Menu_Help_About" onAction="#onMenuHelpAboutClicked"/>
+        </Menu>
+    </MenuBar>
+    <fx:include fx:id="searchBar" source="SearchBar.fxml"/>
+
+    <GridPane hgap="10" vgap="10" VBox.vgrow="ALWAYS" gridLinesVisible="false" style="-fx-padding: 10;">
+        <columnConstraints>
+            <ColumnConstraints percentWidth="16.67" />
+            <ColumnConstraints percentWidth="16.67" />
+            <ColumnConstraints percentWidth="16.67" />
+            <ColumnConstraints percentWidth="16.67" />
+            <ColumnConstraints percentWidth="16.67" />
+            <ColumnConstraints percentWidth="16.67" />
+        </columnConstraints>
+
+        <rowConstraints>
+            <RowConstraints percentHeight="10" />
+            <RowConstraints percentHeight="18" />
+            <RowConstraints percentHeight="18" />
+            <RowConstraints percentHeight="18" />
+            <RowConstraints percentHeight="18" />
+            <RowConstraints percentHeight="18" />
+        </rowConstraints>
+
+        <TitledPane text="Tours" collapsible="false"
+                    GridPane.columnIndex="0" GridPane.rowIndex="0"
+                    GridPane.columnSpan="2" GridPane.rowSpan="3">
+            <fx:include fx:id="tourOverview" source="TourOverview.fxml"/>
+        </TitledPane>
+
+        <TitledPane text="Tour Logs" collapsible="false"
+                    GridPane.columnIndex="0" GridPane.rowIndex="3"
+                    GridPane.columnSpan="2" GridPane.rowSpan="3">
+            <ListView fx:id="tourLogList" VBox.vgrow="ALWAYS" />
+        </TitledPane>
+
+        <TitledPane text="Tour Details" collapsible="false"
+                    GridPane.columnIndex="2" GridPane.rowIndex="0"
+                    GridPane.columnSpan="4" GridPane.rowSpan="3">
+            <fx:include fx:id="tourDetails" source="TourDetails.fxml" />
+        </TitledPane>
+
+        <TitledPane text="Tour Map" collapsible="false"
+                    GridPane.columnIndex="2" GridPane.rowIndex="3"
+                    GridPane.columnSpan="4" GridPane.rowSpan="3">
+            <BorderPane>
+                <center>
+                    <Pane fx:id="mapView" style="-fx-background-color: #f0f0f0;">
+                        <Label text="Map View - OpenStreetMap will be displayed here"
+                               translateX="120" translateY="120"/>
+                    </Pane>
+                </center>
+            </BorderPane>
+        </TitledPane>
+    </GridPane>
+</VBox>

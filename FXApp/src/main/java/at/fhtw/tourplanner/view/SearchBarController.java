@@ -1,6 +1,6 @@
-package at.fhtw.medialib.view;
+package at.fhtw.tourplanner.view;
 
-import at.fhtw.medialib.viewmodel.SearchBarViewModel;
+import at.fhtw.tourplanner.viewmodel.SearchBarViewModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

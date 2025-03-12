@@ -1,6 +1,6 @@
-package at.fhtw.medialib.view;
+package at.fhtw.tourplanner.view;
 
-import at.fhtw.medialib.viewmodel.MainWindowViewModel;
+import at.fhtw.tourplanner.viewmodel.MainWindowViewModel;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -11,8 +11,8 @@ public class MainWindowController {
     // fx:id Attribute of <fx:include> tag + "Controller"
     // tutorial see https://riptutorial.com/javafx/example/7285/nested-controllers
     @FXML private SearchBarController searchBarController;    // injected controller of SearchBar.fxml
-    @FXML private MediaOverviewController mediaOverviewController;    // injected controller of MediaOverview.fxml
-    @FXML private MediaDetailsController mediaDetailsController;    // injected controller of MediaDetails.fxml
+    @FXML private TourOverviewController mediaOverviewController;    // injected controller of TourOverview.fxml
+    @FXML private TourDetailsController mediaDetailsController;    // injected controller of TourDetails.fxml
 
     private final MainWindowViewModel mainViewModel;
 

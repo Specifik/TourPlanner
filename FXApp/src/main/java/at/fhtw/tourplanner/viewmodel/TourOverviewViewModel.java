@@ -1,7 +1,7 @@
-package at.fhtw.medialib.viewmodel;
+package at.fhtw.tourplanner.viewmodel;
 
-import at.fhtw.medialib.dal.DAL;
-import at.fhtw.medialib.model.MediaItem;
+import at.fhtw.tourplanner.dal.DAL;
+import at.fhtw.tourplanner.model.Tour;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,25 +9,25 @@ import javafx.collections.ObservableList;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MediaOverviewViewModel {
+public class TourOverviewViewModel {
     public interface SelectionChangedListener {
-        void changeSelection(MediaItem mediaItem);
+        void changeSelection(Tour tour);
     }
 
     private List<SelectionChangedListener> listeners = new ArrayList<>();
 
-    private ObservableList<MediaItem> observableMediaItems = FXCollections.observableArrayList();
+    private ObservableList<Tour> observableTours = FXCollections.observableArrayList();
 
-    public MediaOverviewViewModel()
+    public TourOverviewViewModel()
     {
         setTours( DAL.getInstance().tourDao().getAll() );
     }
 
-    public ObservableList<MediaItem> getObservableTours() {
-        return observableMediaItems;
+    public ObservableList<Tour> getObservableTours() {
+        return observableTours;
     }
 
-    public ChangeListener<MediaItem> getChangeListener() {
+    public ChangeListener<Tour> getChangeListener() {
         return (observableValue, oldValue, newValue) -> notifyListeners(newValue);
     }
 
@@ -39,24 +39,24 @@ public class MediaOverviewViewModel {
         listeners.remove(listener);
     }
 
-    private void notifyListeners(MediaItem newValue) {
+    private void notifyListeners(Tour newValue) {
         for ( var listener : listeners ) {
             listener.changeSelection(newValue);
         }
     }
 
-    public void setTours(List<MediaItem> mediaItems) {
-        observableMediaItems.clear();
-        observableMediaItems.addAll(mediaItems);
+    public void setTours(List<Tour> tours) {
+        observableTours.clear();
+        observableTours.addAll(tours);
     }
 
     public void addNewTour() {
         var tour = DAL.getInstance().tourDao().create();
-        observableMediaItems.add(tour);
+        observableTours.add(tour);
     }
 
-    public void deleteTour(MediaItem mediaItem) {
-        DAL.getInstance().tourDao().delete(mediaItem);
-        observableMediaItems.remove(mediaItem);
+    public void deleteTour(Tour tour) {
+        DAL.getInstance().tourDao().delete(tour);
+        observableTours.remove(tour);
     }
 }

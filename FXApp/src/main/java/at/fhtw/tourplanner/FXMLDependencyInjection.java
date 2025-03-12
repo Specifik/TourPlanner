@@ -1,6 +1,6 @@
-package at.fhtw.medialib;
+package at.fhtw.tourplanner;
 
-import at.fhtw.medialib.view.ControllerFactory;
+import at.fhtw.tourplanner.view.ControllerFactory;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
@@ -21,8 +21,8 @@ public class FXMLDependencyInjection {
 
     public static FXMLLoader getLoader(String location, Locale locale) {
         return new FXMLLoader(
-                FXMLDependencyInjection.class.getResource("/at/fhtw/medialib/view/" + location),
-                ResourceBundle.getBundle("at.fhtw.medialib.view." + "gui_strings", locale),
+                FXMLDependencyInjection.class.getResource("/at/fhtw/tourplanner/view/" + location),
+                ResourceBundle.getBundle("at.fhtw.tourplanner.view." + "gui_strings", locale),
                 new JavaFXBuilderFactory(),
                 controllerClass-> ControllerFactory.getInstance().create(controllerClass)
                 );

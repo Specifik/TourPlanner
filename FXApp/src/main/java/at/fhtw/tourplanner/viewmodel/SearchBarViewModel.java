@@ -1,4 +1,4 @@
-package at.fhtw.medialib.viewmodel;
+package at.fhtw.tourplanner.viewmodel;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;

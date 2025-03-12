@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="at.fhtw.tourplanner.view.TourDetailsController">
+    <ToolBar>
+        <Label text="Tour Name:"/>
+        <TextField fx:id="nameTextField" HBox.hgrow="ALWAYS"/>
+    </ToolBar>
+    <GridPane hgap="10" vgap="10" VBox.vgrow="ALWAYS" style="-fx-padding: 10;">
+        <columnConstraints>
+            <ColumnConstraints minWidth="100" prefWidth="120" />
+            <ColumnConstraints hgrow="ALWAYS" />
+        </columnConstraints>
+
+        <rowConstraints>
+            <RowConstraints minHeight="30" />
+            <RowConstraints minHeight="30" />
+            <RowConstraints vgrow="ALWAYS" />
+        </rowConstraints>
+
+        <Label text="From:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <TextField fx:id="fromTextField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+        <Label text="To:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <TextField fx:id="toTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+    </GridPane>
+</VBox>

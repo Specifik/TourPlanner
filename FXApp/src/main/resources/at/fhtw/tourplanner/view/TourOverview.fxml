@@ -6,13 +6,13 @@
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="at.fhtw.medialib.view.MediaOverviewController">
+      fx:controller="at.fhtw.tourplanner.view.TourOverviewController">
     <ToolBar>
-        <Label text="%MediaOverview_Items"/>
+        <Label text="Tours"/>
         <Pane HBox.hgrow="ALWAYS"/>
         <Button text="+" onAction="#onButtonAdd"/>
         <Button text="-" onAction="#onButtonRemove"/>
         <Button text="..."/>
     </ToolBar>
-    <ListView fx:id="mediaItemList" VBox.vgrow="ALWAYS"/>
+    <ListView fx:id="tourList" VBox.vgrow="ALWAYS"/>
 </VBox>

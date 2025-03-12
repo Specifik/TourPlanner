@@ -1,19 +1,19 @@
-package at.fhtw.medialib.dal;
+package at.fhtw.tourplanner.dal;
 
-import at.fhtw.medialib.model.MediaItem;
+import at.fhtw.tourplanner.model.Tour;
 
 public class DAL {
 
-    private final Dao<MediaItem> tourDao;
+    private final Dao<Tour> tourDao;
 
     private DAL() {
-        tourDao = new MediaItemDao();
+        tourDao = new TourDao();
     }
 
     //
     // Tours:
     //
-    public Dao<MediaItem> tourDao() {
+    public Dao<Tour> tourDao() {
         return tourDao;
     }
 

@@ -7,8 +7,8 @@ module medialib {
     requires medialibbl;
     requires medialibdal;
 
-    opens at.fhtw.medialib.view to javafx.graphics, javafx.fxml;
-    exports at.fhtw.medialib;
-    exports at.fhtw.medialib.viewmodel;
-    exports at.fhtw.medialib.view;
+    opens at.fhtw.tourplanner.view to javafx.graphics, javafx.fxml;
+    exports at.fhtw.tourplanner;
+    exports at.fhtw.tourplanner.viewmodel;
+    exports at.fhtw.tourplanner.view;
 }
