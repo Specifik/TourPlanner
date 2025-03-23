@@ -68,14 +68,14 @@
                     GridPane.columnIndex="1" GridPane.rowIndex="1"
                     GridPane.halignment="CENTER" GridPane.valignment="CENTER"
                     maxHeight="Infinity" maxWidth="Infinity">
-            <BorderPane>
-                <center>
-                    <Pane fx:id="mapView" style="-fx-background-color: #f0f0f0;">
-                        <Label text="Map View Placeholder" style="-fx-font-size: 14px;"
-                               translateX="20" translateY="20"/>
-                    </Pane>
-                </center>
-            </BorderPane>
+            <StackPane>
+                <Pane fx:id="mapView" style="-fx-background-color: #f0f0f0;"
+                      StackPane.alignment="CENTER">
+                </Pane>
+                <Label text="Map Placeholder"
+                       style="-fx-font-size: 16px; -fx-font-weight: bold;"
+                       StackPane.alignment="CENTER"/>
+            </StackPane>
         </TitledPane>
     </GridPane>
 </VBox>
