@@ -18,7 +18,7 @@
                 <Tooltip text="Remove selected log entry"/>
             </tooltip>
         </Button>
-        <Button text="✎" onAction="#onButtonEditLog">
+        <Button text="edit" onAction="#onButtonEditLog">
             <tooltip>
                 <Tooltip text="Edit selected log entry"/>
             </tooltip>
