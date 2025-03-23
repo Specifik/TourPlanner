@@ -39,21 +39,48 @@ public class TourLogDao {
     }
 
     public TourLog create(int tourId) {
-        var tourLog = new TourLog(nextId, tourId, LocalDateTime.now(), "", "Easy", 0.0, 0, 3);
+        var tourLog = new TourLog(nextId, tourId, LocalDateTime.now(), "", "Leicht", 0.0, 0, 3);
         tourLogs.add(tourLog);
         nextId++;
         return tourLog;
     }
 
     public void update(TourLog tourLog, List<?> params) {
-        tourLog.setId((Integer) params.get(0));
-        tourLog.setTourId((Integer) params.get(1));
-        tourLog.setDateTime((LocalDateTime) params.get(2));
-        tourLog.setComment((String) params.get(3));
-        tourLog.setDifficulty((String) params.get(4));
-        tourLog.setTotalDistance((Double) params.get(5));
-        tourLog.setTotalTime((Integer) params.get(6));
-        tourLog.setRating((Integer) params.get(7));
+        int logId = (Integer) params.get(0);
+        int tourId = (Integer) params.get(1);
+
+        // Find the tour log in our list
+        Optional<TourLog> existingLogOpt = tourLogs.stream()
+                .filter(log -> log.getId() == logId)
+                .findFirst();
+
+        if (existingLogOpt.isPresent()) {
+            TourLog existingLog = existingLogOpt.get();
+
+            // Update the existing log with the new values
+            existingLog.setTourId(tourId);
+            existingLog.setDateTime((LocalDateTime) params.get(2));
+            existingLog.setComment((String) params.get(3));
+            existingLog.setDifficulty((String) params.get(4));
+
+            try {
+                existingLog.setTotalDistance((Double) params.get(5));
+            } catch (ClassCastException e) {
+                existingLog.setTotalDistance(Double.parseDouble(params.get(5).toString()));
+            }
+
+            try {
+                existingLog.setTotalTime((Integer) params.get(6));
+            } catch (ClassCastException e) {
+                existingLog.setTotalTime(Integer.parseInt(params.get(6).toString()));
+            }
+
+            try {
+                existingLog.setRating((Integer) params.get(7));
+            } catch (ClassCastException e) {
+                existingLog.setRating(Integer.parseInt(params.get(7).toString()));
+            }
+        }
     }
 
     public void delete(TourLog tourLog) {

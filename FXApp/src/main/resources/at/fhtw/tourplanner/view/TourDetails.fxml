@@ -2,39 +2,64 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
       fx:controller="at.fhtw.tourplanner.view.TourDetailsController">
     <ToolBar>
         <Label text="Tour Name:"/>
         <TextField fx:id="nameTextField" HBox.hgrow="ALWAYS"/>
     </ToolBar>
-    <GridPane hgap="10" vgap="10" VBox.vgrow="ALWAYS" style="-fx-padding: 10;">
-        <columnConstraints>
-            <ColumnConstraints minWidth="100" prefWidth="120" />
-            <ColumnConstraints hgrow="ALWAYS" />
-        </columnConstraints>
 
-        <rowConstraints>
-            <RowConstraints minHeight="30" />
-            <RowConstraints minHeight="30" />
-            <RowConstraints minHeight="30" />
-            <RowConstraints minHeight="30" />
-            <RowConstraints vgrow="ALWAYS" />
-        </rowConstraints>
+    <!-- Use ScrollPane to ensure content is scrollable when window is small -->
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+        <GridPane hgap="10" vgap="10" style="-fx-padding: 10;">
+            <columnConstraints>
+                <ColumnConstraints minWidth="100" prefWidth="120" />
+                <ColumnConstraints hgrow="ALWAYS" />
+            </columnConstraints>
 
-        <!-- From/To -->
-        <Label text="From:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <TextField fx:id="fromTextField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <rowConstraints>
+                <RowConstraints minHeight="30" />
+                <RowConstraints minHeight="30" />
+                <RowConstraints minHeight="30" />
+                <RowConstraints minHeight="30" />
+                <RowConstraints minHeight="80" vgrow="ALWAYS" />
+                <RowConstraints minHeight="40" />
+            </rowConstraints>
 
-        <Label text="To:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-        <TextField fx:id="toTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <!-- From/To -->
+            <Label text="From:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <TextField fx:id="fromTextField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-        <!-- Transport Type -->
-        <Label text="Transport Type:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-        <ComboBox fx:id="transportTypeComboBox" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="150" />
+            <Label text="To:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <TextField fx:id="toTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-        <!-- Description -->
-        <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.valignment="TOP" />
-        <TextArea fx:id="descriptionTextArea" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.rowSpan="2" wrapText="true" />
-    </GridPane>
+            <!-- Transport Type -->
+            <Label text="Transport Type:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <ComboBox fx:id="transportTypeComboBox" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="150">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Walking" />
+                        <String fx:value="Biking" />
+                        <String fx:value="Hiking" />
+                        <String fx:value="Running" />
+                        <String fx:value="Car" />
+                        <String fx:value="Public Transport" />
+                    </FXCollections>
+                </items>
+            </ComboBox>
+
+            <!-- Description -->
+            <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.valignment="TOP" />
+            <TextArea fx:id="descriptionTextArea" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.rowSpan="2" wrapText="true" />
+
+            <!-- Action Buttons - Fixed at the bottom -->
+            <HBox spacing="10" alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                <Button fx:id="saveTourButton" text="Save" onAction="#onSaveTourClicked" defaultButton="true" />
+                <Button fx:id="cancelButton" text="Cancel" onAction="#onCancelClicked" />
+            </HBox>
+        </GridPane>
+    </ScrollPane>
 </VBox>

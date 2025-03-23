@@ -3,6 +3,7 @@ package at.fhtw.tourplanner.dal;
 import at.fhtw.tourplanner.model.Tour;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TourDao implements Dao<Tour> {
     private final List<Tour> tours = new ArrayList<>();
@@ -27,7 +28,7 @@ public class TourDao implements Dao<Tour> {
 
     @Override
     public List<Tour> getAll() {
-        return tours;
+        return new ArrayList<>(tours); // Return a copy to prevent concurrent modification issues
     }
 
     @Override
@@ -40,18 +41,22 @@ public class TourDao implements Dao<Tour> {
 
     @Override
     public void update(Tour tour, List<?> params) {
-        System.out.println("Updating tour: " + params);
-        tour.setId((Integer) params.get(0));
-        tour.setName(Objects.requireNonNull(params.get(1), "Name cannot be null").toString());
-        tour.setFrom((params.get(2) == null) ? "" : params.get(2).toString());
-        tour.setTo((params.get(3) == null) ? "" : params.get(3).toString());
+        int id = (Integer) params.get(0);
 
-        // Handle the new fields
-        if (params.size() > 4) {
-            tour.setTransportType((params.get(4) == null) ? "" : params.get(4).toString());
-        }
-        if (params.size() > 5) {
-            tour.setDescription((params.get(5) == null) ? "" : params.get(5).toString());
+        // Find the tour in our list
+        Optional<Tour> existingTourOpt = tours.stream()
+                .filter(t -> t.getId() == id)
+                .findFirst();
+
+        if (existingTourOpt.isPresent()) {
+            Tour existingTour = existingTourOpt.get();
+
+            // Update the existing tour with the new values
+            existingTour.setName(Objects.requireNonNull(params.get(1), "Name cannot be null").toString());
+            existingTour.setFrom((params.get(2) == null) ? "" : params.get(2).toString());
+            existingTour.setTo((params.get(3) == null) ? "" : params.get(3).toString());
+            existingTour.setTransportType((params.get(4) == null) ? "" : params.get(4).toString());
+            existingTour.setDescription((params.get(5) == null) ? "" : params.get(5).toString());
         }
     }
 

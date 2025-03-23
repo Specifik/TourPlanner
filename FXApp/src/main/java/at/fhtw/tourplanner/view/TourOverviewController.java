@@ -22,16 +22,27 @@ public class TourOverviewController {
 
     @FXML
     void initialize() {
+        // Bind the ListView to the observable list
         tourList.setItems(tourOverviewViewModel.getObservableTours());
+
+        // Set up the change listener for selection
         tourList.getSelectionModel().selectedItemProperty().addListener(tourOverviewViewModel.getChangeListener());
+
+        // Bind the selected item bidirectionally
+        tourOverviewViewModel.selectedTourProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && newVal != tourList.getSelectionModel().getSelectedItem()) {
+                tourList.getSelectionModel().select(newVal);
+            }
+        });
     }
 
     public void onButtonAdd(ActionEvent actionEvent) {
         tourOverviewViewModel.addNewTour();
-        tourList.getSelectionModel().selectLast();
+        tourList.refresh(); // Force a UI refresh
     }
 
     public void onButtonRemove(ActionEvent actionEvent) {
         tourOverviewViewModel.deleteTour(tourList.getSelectionModel().getSelectedItem());
+        tourList.refresh(); // Force a UI refresh
     }
 }

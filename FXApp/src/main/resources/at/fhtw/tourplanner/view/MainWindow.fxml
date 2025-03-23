@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.*?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="at.fhtw.tourplanner.view.MainWindowController"
@@ -29,51 +24,55 @@
     </MenuBar>
     <fx:include fx:id="searchBar" source="SearchBar.fxml"/>
 
-    <GridPane hgap="10" vgap="10" VBox.vgrow="ALWAYS" gridLinesVisible="false" style="-fx-padding: 10;">
+    <GridPane hgap="5" vgap="5" VBox.vgrow="ALWAYS" style="-fx-padding: 5;">
         <columnConstraints>
-            <ColumnConstraints percentWidth="16.67" />
-            <ColumnConstraints percentWidth="16.67" />
-            <ColumnConstraints percentWidth="16.67" />
-            <ColumnConstraints percentWidth="16.67" />
-            <ColumnConstraints percentWidth="16.67" />
-            <ColumnConstraints percentWidth="16.67" />
+            <ColumnConstraints percentWidth="33.0" />
+            <ColumnConstraints percentWidth="67.0" />
         </columnConstraints>
 
         <rowConstraints>
-            <RowConstraints percentHeight="10" />
-            <RowConstraints percentHeight="18" />
-            <RowConstraints percentHeight="18" />
-            <RowConstraints percentHeight="18" />
-            <RowConstraints percentHeight="18" />
-            <RowConstraints percentHeight="18" />
+            <RowConstraints percentHeight="50.0" />
+            <RowConstraints percentHeight="50.0" />
         </rowConstraints>
 
+        <!-- Tours Section - Left Top -->
         <TitledPane text="Tours" collapsible="false"
                     GridPane.columnIndex="0" GridPane.rowIndex="0"
-                    GridPane.columnSpan="2" GridPane.rowSpan="3">
+                    GridPane.halignment="CENTER" GridPane.valignment="CENTER"
+                    maxHeight="Infinity" maxWidth="Infinity">
             <fx:include fx:id="tourOverview" source="TourOverview.fxml"/>
         </TitledPane>
 
+        <!-- Tour Logs Section - Left Bottom -->
         <TitledPane text="Tour Logs" collapsible="false"
-                    GridPane.columnIndex="0" GridPane.rowIndex="3"
-                    GridPane.columnSpan="2" GridPane.rowSpan="3">
+                    GridPane.columnIndex="0" GridPane.rowIndex="1"
+                    GridPane.halignment="CENTER" GridPane.valignment="CENTER"
+                    maxHeight="Infinity" maxWidth="Infinity">
             <fx:include fx:id="tourLogs" source="TourLogs.fxml"/>
         </TitledPane>
 
+        <!-- Tour Details Section - Right Top -->
         <TitledPane text="Tour Details" collapsible="false"
-                    GridPane.columnIndex="2" GridPane.rowIndex="0"
-                    GridPane.columnSpan="4" GridPane.rowSpan="3">
-            <fx:include fx:id="tourDetails" source="TourDetails.fxml" />
+                    GridPane.columnIndex="1" GridPane.rowIndex="0"
+                    GridPane.halignment="CENTER" GridPane.valignment="CENTER"
+                    maxHeight="Infinity" maxWidth="Infinity">
+            <TabPane fx:id="detailsTabPane" tabClosingPolicy="ALL_TABS">
+                <Tab text="Tour Details" closable="false">
+                    <fx:include fx:id="tourDetails" source="TourDetails.fxml" />
+                </Tab>
+            </TabPane>
         </TitledPane>
 
+        <!-- Tour Map Section - Right Bottom -->
         <TitledPane text="Tour Map" collapsible="false"
-                    GridPane.columnIndex="2" GridPane.rowIndex="3"
-                    GridPane.columnSpan="4" GridPane.rowSpan="3">
+                    GridPane.columnIndex="1" GridPane.rowIndex="1"
+                    GridPane.halignment="CENTER" GridPane.valignment="CENTER"
+                    maxHeight="Infinity" maxWidth="Infinity">
             <BorderPane>
                 <center>
                     <Pane fx:id="mapView" style="-fx-background-color: #f0f0f0;">
-                        <Label text="Map View - OpenStreetMap will be displayed here"
-                               translateX="120" translateY="120"/>
+                        <Label text="Map View Placeholder" style="-fx-font-size: 14px;"
+                               translateX="20" translateY="20"/>
                     </Pane>
                 </center>
             </BorderPane>

@@ -28,7 +28,13 @@ public class TourLogDetailsViewModel {
         void onClose();
     }
 
+    // Callback for when a log is updated
+    public interface LogUpdatedListener {
+        void onLogUpdated(TourLog updatedLog);
+    }
+
     private final List<CloseListener> closeListeners = new ArrayList<>();
+    private final List<LogUpdatedListener> logUpdatedListeners = new ArrayList<>();
 
     public TourLogDetailsViewModel() {
     }
@@ -65,6 +71,10 @@ public class TourLogDetailsViewModel {
         }
 
         if (tourLog != null) {
+            // Create a copy of the original tour log ID and tour ID
+            int logId = tourLog.getId();
+            int tourId = tourLog.getTourId();
+
             // Update the tour log from the UI values
             LocalDateTime dateTime = LocalDateTime.of(date.get(), LocalTime.now());
             tourLog.setDateTime(dateTime);
@@ -87,8 +97,8 @@ public class TourLogDetailsViewModel {
 
             // Save to the DAO
             DAL.getInstance().tourLogDao().update(tourLog, Arrays.asList(
-                    tourLog.getId(),
-                    tourLog.getTourId(),
+                    logId,
+                    tourId,
                     tourLog.getDateTime(),
                     tourLog.getComment(),
                     tourLog.getDifficulty(),
@@ -96,6 +106,11 @@ public class TourLogDetailsViewModel {
                     tourLog.getTotalTime(),
                     tourLog.getRating()
             ));
+
+            // Notify listeners that the log has been updated
+            for (LogUpdatedListener listener : logUpdatedListeners) {
+                listener.onLogUpdated(tourLog);
+            }
 
             return true;
         }
@@ -158,6 +173,14 @@ public class TourLogDetailsViewModel {
 
     public void removeCloseListener(CloseListener listener) {
         closeListeners.remove(listener);
+    }
+
+    public void addLogUpdatedListener(LogUpdatedListener listener) {
+        logUpdatedListeners.add(listener);
+    }
+
+    public void removeLogUpdatedListener(LogUpdatedListener listener) {
+        logUpdatedListeners.remove(listener);
     }
 
     // Property getters

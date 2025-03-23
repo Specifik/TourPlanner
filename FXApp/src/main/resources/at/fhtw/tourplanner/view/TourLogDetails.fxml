@@ -6,76 +6,78 @@
 <?import java.time.LocalDate?>
 <?import javafx.scene.control.DatePicker?>
 
-<GridPane xmlns="http://javafx.com/javafx"
-          xmlns:fx="http://javafx.com/fxml"
-          fx:controller="at.fhtw.tourplanner.view.TourLogDetailsController"
-          hgap="10" vgap="10" style="-fx-padding: 15;">
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<ScrollPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="at.fhtw.tourplanner.view.TourLogDetailsController"
+            fitToWidth="true" fitToHeight="true">
+    <GridPane hgap="10" vgap="10" style="-fx-padding: 15;">
+        <columnConstraints>
+            <ColumnConstraints minWidth="120" prefWidth="150" />
+            <ColumnConstraints hgrow="ALWAYS" />
+        </columnConstraints>
 
-    <columnConstraints>
-        <ColumnConstraints minWidth="120" prefWidth="150" />
-        <ColumnConstraints hgrow="ALWAYS" />
-    </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="30" />
+            <RowConstraints minHeight="30" />
+            <RowConstraints minHeight="30" />
+            <RowConstraints minHeight="30" />
+            <RowConstraints minHeight="30" />
+            <RowConstraints vgrow="ALWAYS" minHeight="100" />
+            <RowConstraints minHeight="40" />
+        </rowConstraints>
 
-    <rowConstraints>
-        <RowConstraints minHeight="30" />
-        <RowConstraints minHeight="30" />
-        <RowConstraints minHeight="30" />
-        <RowConstraints minHeight="30" />
-        <RowConstraints minHeight="30" />
-        <RowConstraints vgrow="ALWAYS" minHeight="100" />
-        <RowConstraints minHeight="40" />
-    </rowConstraints>
+        <!-- Date -->
+        <Label text="Date:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <DatePicker fx:id="dateField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-    <!-- Date -->
-    <Label text="Date:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-    <DatePicker fx:id="dateField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+        <!-- Difficulty -->
+        <Label text="Difficulty:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <ComboBox fx:id="difficultyField" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Leicht" />
+                    <String fx:value="Mittel" />
+                    <String fx:value="Schwer" />
+                    <String fx:value="Sehr schwer" />
+                </FXCollections>
+            </items>
+        </ComboBox>
 
-    <!-- Difficulty -->
-    <Label text="Difficulty:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-    <ComboBox fx:id="difficultyField" GridPane.columnIndex="1" GridPane.rowIndex="1">
-        <items>
-            <FXCollections fx:factory="observableArrayList">
-                <String fx:value="Leicht" />
-                <String fx:value="Mittel" />
-                <String fx:value="Schwer" />
-                <String fx:value="Sehr schwer" />
-            </FXCollections>
-        </items>
-    </ComboBox>
+        <!-- Total Distance -->
+        <Label text="Total Distance (km):" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <TextField fx:id="distanceField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-    <!-- Total Distance -->
-    <Label text="Total Distance (km):" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-    <TextField fx:id="distanceField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+        <!-- Total Time -->
+        <Label text="Total Time (min):" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+        <TextField fx:id="timeField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-    <!-- Total Time -->
-    <Label text="Total Time (min):" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-    <TextField fx:id="timeField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+        <!-- Rating -->
+        <Label text="Rating (1-5):" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+        <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="4" alignment="CENTER_LEFT">
+            <fx:define>
+                <ToggleGroup fx:id="ratingGroup" />
+            </fx:define>
+            <RadioButton fx:id="rating1" text="1" toggleGroup="$ratingGroup" userData="1" />
+            <RadioButton fx:id="rating2" text="2" toggleGroup="$ratingGroup" userData="2" />
+            <RadioButton fx:id="rating3" text="3" toggleGroup="$ratingGroup" userData="3" />
+            <RadioButton fx:id="rating4" text="4" toggleGroup="$ratingGroup" userData="4" />
+            <RadioButton fx:id="rating5" text="5" toggleGroup="$ratingGroup" userData="5" />
+        </HBox>
 
-    <!-- Rating -->
-    <Label text="Rating (1-5):" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-    <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="4" alignment="CENTER_LEFT">
-        <fx:define>
-            <ToggleGroup fx:id="ratingGroup" />
-        </fx:define>
-        <RadioButton fx:id="rating1" text="1" toggleGroup="$ratingGroup" userData="1" />
-        <RadioButton fx:id="rating2" text="2" toggleGroup="$ratingGroup" userData="2" />
-        <RadioButton fx:id="rating3" text="3" toggleGroup="$ratingGroup" userData="3" />
-        <RadioButton fx:id="rating4" text="4" toggleGroup="$ratingGroup" userData="4" />
-        <RadioButton fx:id="rating5" text="5" toggleGroup="$ratingGroup" userData="5" />
-    </HBox>
+        <!-- Comment -->
+        <Label text="Comment:" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.valignment="TOP">
+            <GridPane.margin>
+                <Insets top="5" />
+            </GridPane.margin>
+        </Label>
+        <TextArea fx:id="commentField" GridPane.columnIndex="1" GridPane.rowIndex="5" wrapText="true" />
 
-    <!-- Comment -->
-    <Label text="Comment:" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.valignment="TOP">
-        <GridPane.margin>
-            <Insets top="5" />
-        </GridPane.margin>
-    </Label>
-    <TextArea fx:id="commentField" GridPane.columnIndex="1" GridPane.rowIndex="5" wrapText="true" />
-
-    <!-- Action Buttons -->
-    <HBox spacing="10" alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="6">
-        <Button fx:id="saveButton" text="Save" onAction="#onSaveClicked" defaultButton="true" />
-        <Button fx:id="cancelButton" text="Cancel" onAction="#onCancelClicked" />
-    </HBox>
-
-</GridPane>
+        <!-- Action Buttons -->
+        <HBox spacing="10" alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="6">
+            <Button fx:id="saveButton" text="Save" onAction="#onSaveClicked" defaultButton="true" />
+            <Button fx:id="cancelButton" text="Cancel" onAction="#onCancelClicked" />
+        </HBox>
+    </GridPane>
+</ScrollPane>

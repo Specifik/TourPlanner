@@ -4,11 +4,13 @@ import at.fhtw.tourplanner.model.TourLog;
 import at.fhtw.tourplanner.viewmodel.TourLogsViewModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class TourLogsController {
     @FXML
@@ -47,6 +49,20 @@ public class TourLogsController {
         totalTimeColumn.setCellValueFactory(new PropertyValueFactory<>("totalTime"));
         totalDistanceColumn.setCellValueFactory(new PropertyValueFactory<>("totalDistance"));
         ratingColumn.setCellValueFactory(new PropertyValueFactory<>("rating"));
+
+        dateColumn.setCellFactory(column -> new TableCell<>() {
+            private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
+            @Override
+            protected void updateItem(LocalDateTime item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(formatter.format(item));
+                }
+            }
+        });
 
         // Bind the table to the view model
         tourLogsTable.setItems(tourLogsViewModel.getObservableTourLogs());
