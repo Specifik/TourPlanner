@@ -34,27 +34,23 @@ public class SearchBarController {
 
     @FXML
     void initialize() {
-        // Set up search input binding
         searchTextField.textProperty().bindBidirectional(searchBarViewModel.searchTextProperty());
 
-        // Set up search scope binding if the ComboBox exists
         if (searchScopeComboBox != null) {
             searchScopeComboBox.valueProperty().bindBidirectional(searchBarViewModel.searchScopeProperty());
         }
 
-        // Handle Enter key in search field
         searchTextField.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 onSearchButton(new ActionEvent());
             }
         });
 
-        // Set tooltips
+        // Tooltips
         searchTextField.setTooltip(new javafx.scene.control.Tooltip("Enter search text"));
         searchButton.setTooltip(new javafx.scene.control.Tooltip("Search tours and logs"));
         clearButton.setTooltip(new javafx.scene.control.Tooltip("Clear search"));
 
-        // Add placeholder text
         searchTextField.setPromptText("Search tours and logs...");
     }
 

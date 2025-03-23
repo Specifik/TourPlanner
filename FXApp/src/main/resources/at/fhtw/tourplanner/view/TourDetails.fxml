@@ -12,7 +12,6 @@
         <TextField fx:id="nameTextField" HBox.hgrow="ALWAYS"/>
     </ToolBar>
 
-    <!-- Use ScrollPane to ensure content is scrollable when window is small -->
     <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
         <GridPane hgap="10" vgap="10" style="-fx-padding: 10;">
             <columnConstraints>
@@ -55,7 +54,6 @@
             <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.valignment="TOP" />
             <TextArea fx:id="descriptionTextArea" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.rowSpan="2" wrapText="true" />
 
-            <!-- Action Buttons - Fixed at the bottom -->
             <HBox spacing="10" alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="5">
                 <Button fx:id="saveTourButton" text="Save" onAction="#onSaveTourClicked" defaultButton="true" />
                 <Button fx:id="cancelButton" text="Cancel" onAction="#onCancelClicked" />

@@ -19,7 +19,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public class MainWindowController {
-    // Controllers of included fxml-files are injected here
     @FXML private SearchBarController searchBarController;
     @FXML private TourOverviewController tourOverviewController;
     @FXML private TourDetailsController tourDetailsController;
@@ -29,7 +28,7 @@ public class MainWindowController {
     private final MainWindowViewModel mainWindowViewModel;
     private Tab tourLogTab = null;
     private TourLogDetailsController tourLogDetailsController = null;
-    private Tab tourDetailsTab = null;  // Reference to the Tour Details tab
+    private Tab tourDetailsTab = null;
 
     public MainWindowController(MainWindowViewModel mainWindowViewModel) {
         this.mainWindowViewModel = mainWindowViewModel;
@@ -41,39 +40,32 @@ public class MainWindowController {
 
     @FXML
     void initialize() {
-        // This method is called after all @FXML fields have been initialized
+        // method called after all @FXML fields have been initialized
 
-        // Store reference to the Tour Details tab (should be the first tab)
         if (detailsTabPane.getTabs().size() > 0) {
             tourDetailsTab = detailsTabPane.getTabs().get(0);
         }
 
-        // Make sure the tour logs view model is updated when a tour is selected
         if (tourLogsController != null && tourOverviewController != null) {
             tourOverviewController.getTourOverviewViewModel().addSelectionChangedListener(selectedTour -> {
-                // When a tour is selected, switch to the Tour Details tab
                 if (tourDetailsTab != null) {
                     detailsTabPane.getSelectionModel().select(tourDetailsTab);
                 }
 
-                // Update tour logs with the selected tour
                 tourLogsController.getTourLogsViewModel().setCurrentTour(selectedTour);
             });
         }
 
-        // Add listener for opening tour log details
         if (tourLogsController != null) {
             tourLogsController.getTourLogsViewModel().addTourLogDetailsOpenListener(
                     this::showTourLogDetails
             );
 
-            // Add listener for closing tour log details
             tourLogsController.getTourLogsViewModel().addTourLogDetailsCloseListener(
                     this::closeTourLogDetails
             );
         }
 
-        // Add listener for tour updates to forcibly refresh the list view
         if (tourDetailsController != null && tourOverviewController != null) {
             tourDetailsController.getTourDetailsViewModel().addTourUpdatedListener(
                     this::handleTourUpdated
@@ -92,23 +84,19 @@ public class MainWindowController {
     private void showTourLogDetails(TourLog tourLog) {
         try {
             if (tourLogTab == null) {
-                // First time - create the tab and load the FXML using dependency injection
                 FXMLLoader loader = FXMLDependencyInjection.getLoader("TourLogDetails.fxml", Locale.getDefault());
                 Parent root = loader.load();
                 tourLogDetailsController = loader.getController();
 
-                // Add listener to refresh the logs list when a log is updated
                 tourLogDetailsController.getViewModel().addLogUpdatedListener(
                         updatedLog -> tourLogsController.getTourLogsViewModel().handleLogUpdated(updatedLog)
                 );
 
-                // Don't close the tab when saving
                 tourLogDetailsController.getViewModel().setAutoCloseOnSave(false);
 
                 tourLogTab = new Tab("Tour Log Details", root);
                 tourLogTab.setClosable(true);
 
-                // Add listener to handle tab close
                 tourLogTab.setOnClosed(event -> {
                     tourLogTab = null;
                     tourLogDetailsController = null;
@@ -117,10 +105,8 @@ public class MainWindowController {
                 detailsTabPane.getTabs().add(tourLogTab);
             }
 
-            // Update the tab with the new tour log data
             updateTourLogTab(tourLog);
 
-            // Select the tab
             detailsTabPane.getSelectionModel().select(tourLogTab);
 
         } catch (IOException e) {
@@ -135,11 +121,9 @@ public class MainWindowController {
 
     private void updateTourLogTab(TourLog tourLog) {
         if (tourLogTab != null && tourLogDetailsController != null) {
-            // Update the tab title
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
             tourLogTab.setText("Log: " + tourLog.getDateTime().toLocalDate().format(formatter));
 
-            // Update the controller with the new tour log
             tourLogDetailsController.getViewModel().setTourLog(tourLog, false);
         }
     }

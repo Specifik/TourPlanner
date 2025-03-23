@@ -19,13 +19,11 @@ public class MainWindowViewModel {
         this.tourDetailsViewModel = tourDetailsViewModel;
         this.tourLogsViewModel = tourLogsViewModel;
 
-        // Set up search functionality
         this.searchBarViewModel.addSearchListener((searchText, searchScope) -> {
             System.out.println("Searching for: " + searchText + " in scope: " + searchScope);
             searchTours(searchText, searchScope);
         });
 
-        // Set up tour selection handling
         this.tourOverviewViewModel.addSelectionChangedListener(selectedTour -> {
             selectTour(selectedTour);
             if (selectedTour != null) {
@@ -33,7 +31,6 @@ public class MainWindowViewModel {
             }
         });
 
-        // Set up tour update handling
         this.tourDetailsViewModel.addTourUpdatedListener(updatedTour -> {
             tourOverviewViewModel.handleTourUpdated(updatedTour);
         });
@@ -44,7 +41,6 @@ public class MainWindowViewModel {
     }
 
     private void searchTours(String searchText, String searchScope) {
-        // Run on UI thread to ensure proper updates
         Platform.runLater(() -> {
             var tours = BL.getInstance().findMatchingTours(searchText, searchScope);
             tourOverviewViewModel.setTours(tours);

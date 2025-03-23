@@ -11,7 +11,6 @@ public class TourLogDao {
     private int nextId = 1;
 
     public TourLogDao() {
-        // Sample test data
         tourLogs.add(new TourLog(nextId++, 1, LocalDateTime.now().minusDays(7),
                 "War ziemlich heiß, nächstes Mal mehr Wasser mitnehmen", "Leicht", 4.8, 135, 3));
         tourLogs.add(new TourLog(nextId++, 1, LocalDateTime.now().minusDays(3),
@@ -49,7 +48,6 @@ public class TourLogDao {
         int logId = (Integer) params.get(0);
         int tourId = (Integer) params.get(1);
 
-        // Find the tour log in our list
         Optional<TourLog> existingLogOpt = tourLogs.stream()
                 .filter(log -> log.getId() == logId)
                 .findFirst();
@@ -57,7 +55,6 @@ public class TourLogDao {
         if (existingLogOpt.isPresent()) {
             TourLog existingLog = existingLogOpt.get();
 
-            // Update the existing log with the new values
             existingLog.setTourId(tourId);
             existingLog.setDateTime((LocalDateTime) params.get(2));
             existingLog.setComment((String) params.get(3));

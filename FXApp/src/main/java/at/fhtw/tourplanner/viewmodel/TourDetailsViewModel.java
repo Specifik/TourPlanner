@@ -13,7 +13,6 @@ public class TourDetailsViewModel {
     private Tour tourModel;
     private volatile boolean isInitValue = false;
 
-    // Store original values for cancel operation
     private String originalName;
     private String originalFrom;
     private String originalTo;
@@ -26,7 +25,6 @@ public class TourDetailsViewModel {
     private final StringProperty transportType = new SimpleStringProperty();
     private final StringProperty description = new SimpleStringProperty();
 
-    // Callback for when a tour is updated
     public interface TourUpdatedListener {
         void onTourUpdated(Tour updatedTour);
     }
@@ -34,7 +32,6 @@ public class TourDetailsViewModel {
     private final List<TourUpdatedListener> tourUpdatedListeners = new ArrayList<>();
 
     public TourDetailsViewModel() {
-        // We'll manually update the model on save instead of using listeners to avoid unwanted updates
     }
 
     public String getName() {
@@ -80,7 +77,6 @@ public class TourDetailsViewModel {
     public void setTourModel(Tour tourModel) {
         isInitValue = true;
         if (tourModel == null) {
-            // Reset fields if no tour is selected
             name.set("");
             from.set("");
             to.set("");
@@ -120,7 +116,6 @@ public class TourDetailsViewModel {
         if (tourModel != null) {
             isInitValue = true;
 
-            // Reset to stored original values
             name.setValue(originalName);
             from.setValue(originalFrom);
             to.setValue(originalTo);
@@ -137,14 +132,12 @@ public class TourDetailsViewModel {
         }
 
         try {
-            // Update the tour model with current UI values
             tourModel.setName(name.get());
             tourModel.setFrom(from.get());
             tourModel.setTo(to.get());
             tourModel.setTransportType(transportType.get());
             tourModel.setDescription(description.get());
 
-            // Save to the DAO
             DAL.getInstance().tourDao().update(tourModel, Arrays.asList(
                     tourModel.getId(),
                     tourModel.getName(),
@@ -154,14 +147,12 @@ public class TourDetailsViewModel {
                     tourModel.getDescription()
             ));
 
-            // Update original values after successful save
             originalName = tourModel.getName();
             originalFrom = tourModel.getFrom();
             originalTo = tourModel.getTo();
             originalTransportType = tourModel.getTransportType();
             originalDescription = tourModel.getDescription();
 
-            // Notify listeners
             for (TourUpdatedListener listener : tourUpdatedListeners) {
                 listener.onTourUpdated(tourModel);
             }

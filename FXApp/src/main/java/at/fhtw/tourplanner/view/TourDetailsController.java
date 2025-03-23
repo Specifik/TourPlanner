@@ -58,19 +58,16 @@ public class TourDetailsController {
         boolean isValid = true;
         StringBuilder errorMessage = new StringBuilder("Please fix the following errors:\n");
 
-        // Validate name
         if (nameTextField.getText() == null || nameTextField.getText().trim().isEmpty()) {
             errorMessage.append("- Tour name cannot be empty\n");
             isValid = false;
         }
 
-        // Validate from
         if (fromTextField.getText() == null || fromTextField.getText().trim().isEmpty()) {
             errorMessage.append("- Starting location cannot be empty\n");
             isValid = false;
         }
 
-        // Validate to
         if (toTextField.getText() == null || toTextField.getText().trim().isEmpty()) {
             errorMessage.append("- Destination cannot be empty\n");
             isValid = false;
@@ -95,7 +92,6 @@ public class TourDetailsController {
 
     @FXML
     void onCancelClicked(ActionEvent event) {
-        // Reset to original values
         tourDetailsViewModel.resetToOriginal();
     }
 

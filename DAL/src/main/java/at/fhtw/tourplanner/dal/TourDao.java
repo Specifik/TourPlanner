@@ -10,7 +10,6 @@ public class TourDao implements Dao<Tour> {
     private int nextId = 1;
 
     public TourDao() {
-        // Sample test data
         tours.add(new Tour(nextId++, "Wien Innere Stadt", "Schwedenplatz", "Karlsplatz",
                 "Walking", "Kurzer Spaziergang durch die Altstadt"));
         tours.add(new Tour(nextId++, "Donauinsel Radweg", "Donauinsel Nord", "Donauinsel Süd",
@@ -28,7 +27,7 @@ public class TourDao implements Dao<Tour> {
 
     @Override
     public List<Tour> getAll() {
-        return new ArrayList<>(tours); // Return a copy to prevent concurrent modification issues
+        return new ArrayList<>(tours);
     }
 
     @Override
@@ -43,7 +42,6 @@ public class TourDao implements Dao<Tour> {
     public void update(Tour tour, List<?> params) {
         int id = (Integer) params.get(0);
 
-        // Find the tour in our list
         Optional<Tour> existingTourOpt = tours.stream()
                 .filter(t -> t.getId() == id)
                 .findFirst();
@@ -51,7 +49,6 @@ public class TourDao implements Dao<Tour> {
         if (existingTourOpt.isPresent()) {
             Tour existingTour = existingTourOpt.get();
 
-            // Update the existing tour with the new values
             existingTour.setName(Objects.requireNonNull(params.get(1), "Name cannot be null").toString());
             existingTour.setFrom((params.get(2) == null) ? "" : params.get(2).toString());
             existingTour.setTo((params.get(3) == null) ? "" : params.get(3).toString());

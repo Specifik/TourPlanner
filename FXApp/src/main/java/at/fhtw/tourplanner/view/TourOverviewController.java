@@ -27,10 +27,8 @@ public class TourOverviewController {
 
     @FXML
     void initialize() {
-        // Bind the ListView to the observable list
         tourList.setItems(tourOverviewViewModel.getObservableTours());
 
-        // Set up the change listener for selection
         tourList.getSelectionModel().selectedItemProperty().addListener(tourOverviewViewModel.getChangeListener());
     }
 
@@ -39,7 +37,6 @@ public class TourOverviewController {
         System.out.println("Add button clicked");
         Tour newTour = tourOverviewViewModel.addNewTour();
 
-        // Force a JavaFX thread update and select the new tour
         Platform.runLater(() -> {
             tourList.refresh();
             tourList.getSelectionModel().select(newTour);
@@ -51,7 +48,6 @@ public class TourOverviewController {
     public void onButtonRemove(ActionEvent event) {
         Tour selectedTour = tourList.getSelectionModel().getSelectedItem();
         if (selectedTour != null) {
-            // Ask for confirmation
             Alert confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
             confirmDialog.setTitle("Confirm Delete");
             confirmDialog.setHeaderText("Delete Tour");
@@ -59,20 +55,16 @@ public class TourOverviewController {
 
             Optional<ButtonType> result = confirmDialog.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                // User confirmed, delete the tour
                 tourOverviewViewModel.deleteTour(selectedTour);
 
-                // Force a refresh
                 Platform.runLater(() -> {
                     tourList.refresh();
-                    // Select another item if available
                     if (!tourOverviewViewModel.getObservableTours().isEmpty()) {
                         tourList.getSelectionModel().select(0);
                     }
                 });
             }
         } else {
-            // No tour selected, show an error
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("No Selection");
             alert.setHeaderText("No Tour Selected");

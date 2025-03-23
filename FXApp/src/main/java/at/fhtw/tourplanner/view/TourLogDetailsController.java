@@ -58,7 +58,6 @@ public class TourLogDetailsController {
 
     @FXML
     void initialize() {
-        // Set up DatePicker format
         dateField.setConverter(new StringConverter<LocalDate>() {
             private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
@@ -81,19 +80,16 @@ public class TourLogDetailsController {
             }
         });
 
-        // Set up tooltips
         dateField.setTooltip(new Tooltip("Select the date of the tour"));
         difficultyField.setTooltip(new Tooltip("Select the difficulty level"));
         distanceField.setTooltip(new Tooltip("Enter the total distance in km"));
         timeField.setTooltip(new Tooltip("Enter the total time in minutes"));
 
-        // Bind UI elements to the view model properties
         dateField.valueProperty().bindBidirectional(viewModel.dateProperty());
         difficultyField.valueProperty().bindBidirectional(viewModel.difficultyProperty());
         distanceField.textProperty().bindBidirectional(viewModel.distanceStringProperty());
         timeField.textProperty().bindBidirectional(viewModel.timeStringProperty());
 
-        // Set up the rating toggle group
         viewModel.ratingProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 for (Toggle toggle : ratingGroup.getToggles()) {
@@ -111,7 +107,6 @@ public class TourLogDetailsController {
             }
         });
 
-        // Bind the comment field
         commentField.textProperty().bindBidirectional(viewModel.commentProperty());
     }
 
@@ -119,7 +114,6 @@ public class TourLogDetailsController {
         boolean isValid = true;
         StringBuilder errorMessage = new StringBuilder("Please fix the following errors:\n");
 
-        // Validate date
         if (dateField.getValue() == null) {
             errorMessage.append("- Date is required\n");
             isValid = false;
@@ -128,13 +122,11 @@ public class TourLogDetailsController {
             isValid = false;
         }
 
-        // Validate difficulty
         if (difficultyField.getValue() == null || difficultyField.getValue().trim().isEmpty()) {
             errorMessage.append("- Difficulty is required\n");
             isValid = false;
         }
 
-        // Validate distance
         try {
             if (distanceField.getText() == null || distanceField.getText().trim().isEmpty()) {
                 errorMessage.append("- Distance is required\n");
@@ -151,7 +143,6 @@ public class TourLogDetailsController {
             isValid = false;
         }
 
-        // Validate time
         try {
             if (timeField.getText() == null || timeField.getText().trim().isEmpty()) {
                 errorMessage.append("- Time is required\n");
@@ -179,9 +170,7 @@ public class TourLogDetailsController {
     void onSaveClicked(ActionEvent event) {
         if (validateInputs()) {
             if (viewModel.saveTourLog()) {
-                // Successfully saved - do nothing, let the view model handle it
             } else {
-                // Show validation errors from view model
                 showErrorMessage("Cannot save tour log: " + viewModel.getValidationErrors());
             }
         }

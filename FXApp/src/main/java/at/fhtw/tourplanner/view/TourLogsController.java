@@ -47,9 +47,7 @@ public class TourLogsController {
 
     @FXML
     void initialize() {
-        // Configure the table columns
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("dateTime"));
-        // Custom cell factory for date formatting
         dateColumn.setCellFactory(column -> new TableCell<>() {
             private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
@@ -68,10 +66,7 @@ public class TourLogsController {
         totalTimeColumn.setCellValueFactory(new PropertyValueFactory<>("totalTime"));
         totalDistanceColumn.setCellValueFactory(new PropertyValueFactory<>("totalDistance"));
         ratingColumn.setCellValueFactory(new PropertyValueFactory<>("rating"));
-
-        // Configure comments column
         commentColumn.setCellValueFactory(new PropertyValueFactory<>("comment"));
-        // Add tooltip for comments that might be too long
         commentColumn.setCellFactory(column -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -81,7 +76,6 @@ public class TourLogsController {
                     setText(null);
                     setTooltip(null);
                 } else {
-                    // Truncate long comments in display
                     String displayText = item.length() > 30 ? item.substring(0, 27) + "..." : item;
                     setText(displayText);
 
@@ -95,10 +89,8 @@ public class TourLogsController {
             }
         });
 
-        // Bind the table to the view model
         tourLogsTable.setItems(tourLogsViewModel.getObservableTourLogs());
 
-        // Handle row selection
         tourLogsTable.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> {
                     if (newValue != null) {
@@ -107,7 +99,6 @@ public class TourLogsController {
                 }
         );
 
-        // Handle double-click on row
         tourLogsTable.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2 && tourLogsTable.getSelectionModel().getSelectedItem() != null) {
                 tourLogsViewModel.openTourLogDetails(tourLogsTable.getSelectionModel().getSelectedItem());
@@ -124,9 +115,7 @@ public class TourLogsController {
     void onButtonRemoveLog(ActionEvent event) {
         TourLog selectedLog = tourLogsTable.getSelectionModel().getSelectedItem();
         if (selectedLog != null) {
-            // Close any open detail tab for this log first
             tourLogsViewModel.closeTourLogDetails(selectedLog);
-            // Then delete the log
             tourLogsViewModel.deleteTourLog(selectedLog);
         }
     }

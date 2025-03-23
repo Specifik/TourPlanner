@@ -57,7 +57,6 @@ public class TourLogsViewModel {
     }
 
     private void loadTourLogs(int tourId) {
-        // In a real application, this would load from the database
         observableTourLogs.clear();
 
         if (DAL.getInstance().tourLogDao() != null) {
@@ -66,14 +65,12 @@ public class TourLogsViewModel {
         }
     }
 
-    // Method to refresh the tour logs list
     public void refreshTourLogs() {
         if (currentTour.get() != null) {
             Platform.runLater(() -> loadTourLogs(currentTour.get().getId()));
         }
     }
 
-    // Method to handle log updates
     public void handleLogUpdated(TourLog updatedLog) {
         refreshTourLogs();
     }

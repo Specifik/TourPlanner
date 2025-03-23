@@ -23,8 +23,6 @@ public class TourOverviewViewModel {
 
     public TourOverviewViewModel() {
         refreshTours();
-
-        // Listen to our own selection property
         selectedTour.addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 notifyListeners(newVal);
@@ -57,20 +55,15 @@ public class TourOverviewViewModel {
     }
 
     public void setTours(List<Tour> tours) {
-        // Save reference to currently selected tour
         Tour currentSelection = selectedTour.get();
         int selectedId = currentSelection != null ? currentSelection.getId() : -1;
 
-        // Update the observable list
         observableTours.clear();
         observableTours.addAll(tours);
 
-        // Try to restore the selection if we had one
         if (selectedId != -1) {
-            // Find the equivalent tour in the new list
             for (Tour tour : tours) {
                 if (tour.getId() == selectedId) {
-                    // Update our selection
                     Platform.runLater(() -> selectedTour.set(tour));
                     break;
                 }
@@ -84,10 +77,7 @@ public class TourOverviewViewModel {
     }
 
     public void handleTourUpdated(Tour updatedTour) {
-        // Refresh the list to get the latest data
         refreshTours();
-
-        // Re-select the updated tour
         if (updatedTour != null) {
             for (Tour tour : observableTours) {
                 if (tour.getId() == updatedTour.getId()) {
@@ -99,13 +89,8 @@ public class TourOverviewViewModel {
     }
 
     public Tour addNewTour() {
-        // Create a new tour in the DAO
         Tour newTour = DAL.getInstance().tourDao().create();
-
-        // Refresh to get the latest list
         refreshTours();
-
-        // Find and return the newly created tour
         for (Tour tour : observableTours) {
             if (tour.getId() == newTour.getId()) {
                 selectedTour.set(tour);
@@ -118,23 +103,16 @@ public class TourOverviewViewModel {
 
     public void deleteTour(Tour tour) {
         if (tour != null) {
-            // First set selection to null to avoid issues
             selectedTour.set(null);
-
-            // Delete from DAO
             DAL.getInstance().tourDao().delete(tour);
-
-            // Refresh list
             refreshTours();
         }
     }
 
-    // Getter for selected tour property
     public ObjectProperty<Tour> selectedTourProperty() {
         return selectedTour;
     }
 
-    // Setter for selected tour
     public void setSelectedTour(Tour tour) {
         selectedTour.set(tour);
     }

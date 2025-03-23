@@ -29,7 +29,6 @@ public class SearchBarViewModel {
     }
 
     public void search() {
-        // Notify all listeners with the current search text and scope
         for (SearchListener listener : searchListeners) {
             listener.onSearch(searchText.get(), searchScope.get());
         }
@@ -37,7 +36,6 @@ public class SearchBarViewModel {
 
     public void clearSearch() {
         searchText.set("");
-        // Trigger a search with empty text to show all items
         search();
     }
 }

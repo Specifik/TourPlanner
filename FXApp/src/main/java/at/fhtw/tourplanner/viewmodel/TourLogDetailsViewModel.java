@@ -16,7 +16,6 @@ public class TourLogDetailsViewModel {
     private boolean isNewLog;
     private boolean autoCloseOnSave = true;
 
-    // Properties for binding with UI
     private final ObjectProperty<LocalDate> date = new SimpleObjectProperty<>();
     private final StringProperty difficulty = new SimpleStringProperty();
     private final StringProperty distanceString = new SimpleStringProperty();
@@ -24,12 +23,10 @@ public class TourLogDetailsViewModel {
     private final IntegerProperty rating = new SimpleIntegerProperty();
     private final StringProperty comment = new SimpleStringProperty();
 
-    // Callback for when the editor should be closed
     public interface CloseListener {
         void onClose();
     }
 
-    // Callback for when a log is updated
     public interface LogUpdatedListener {
         void onLogUpdated(TourLog updatedLog);
     }
@@ -49,7 +46,6 @@ public class TourLogDetailsViewModel {
         this.isNewLog = isNewLog;
 
         if (tourLog != null) {
-            // Convert LocalDateTime to LocalDate for DatePicker
             date.set(tourLog.getDateTime() != null ? tourLog.getDateTime().toLocalDate() : LocalDate.now());
             difficulty.set(tourLog.getDifficulty());
             distanceString.set(String.valueOf(tourLog.getTotalDistance()));
@@ -76,11 +72,9 @@ public class TourLogDetailsViewModel {
         }
 
         if (tourLog != null) {
-            // Create a copy of the original tour log ID and tour ID
             int logId = tourLog.getId();
             int tourId = tourLog.getTourId();
 
-            // Update the tour log from the UI values
             LocalDateTime dateTime = LocalDateTime.of(date.get(), LocalTime.now());
             tourLog.setDateTime(dateTime);
             tourLog.setDifficulty(difficulty.get());
@@ -100,7 +94,6 @@ public class TourLogDetailsViewModel {
             tourLog.setRating(rating.get());
             tourLog.setComment(comment.get());
 
-            // Save to the DAO
             DAL.getInstance().tourLogDao().update(tourLog, Arrays.asList(
                     logId,
                     tourId,
@@ -112,12 +105,10 @@ public class TourLogDetailsViewModel {
                     tourLog.getRating()
             ));
 
-            // Notify listeners that the log has been updated
             for (LogUpdatedListener listener : logUpdatedListeners) {
                 listener.onLogUpdated(tourLog);
             }
 
-            // Only close if autoCloseOnSave is true
             if (autoCloseOnSave) {
                 closeDetails();
             }
@@ -193,7 +184,6 @@ public class TourLogDetailsViewModel {
         logUpdatedListeners.remove(listener);
     }
 
-    // Property getters
     public ObjectProperty<LocalDate> dateProperty() {
         return date;
     }
