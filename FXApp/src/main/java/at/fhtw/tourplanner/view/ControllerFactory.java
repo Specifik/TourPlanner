@@ -3,6 +3,7 @@ package at.fhtw.tourplanner.view;
 import at.fhtw.tourplanner.viewmodel.MainWindowViewModel;
 import at.fhtw.tourplanner.viewmodel.SearchBarViewModel;
 import at.fhtw.tourplanner.viewmodel.TourDetailsViewModel;
+import at.fhtw.tourplanner.viewmodel.TourLogsViewModel;
 import at.fhtw.tourplanner.viewmodel.TourOverviewViewModel;
 
 public class ControllerFactory {
@@ -10,12 +11,15 @@ public class ControllerFactory {
     private final SearchBarViewModel searchBarViewModel;
     private final TourOverviewViewModel tourOverviewViewModel;
     private final TourDetailsViewModel tourDetailsViewModel;
+    private final TourLogsViewModel tourLogsViewModel;
+
 
     public ControllerFactory() {
         searchBarViewModel = new SearchBarViewModel();
         tourOverviewViewModel = new TourOverviewViewModel();
         tourDetailsViewModel = new TourDetailsViewModel();
-        mainWindowViewModel = new MainWindowViewModel(searchBarViewModel, tourOverviewViewModel, tourDetailsViewModel);
+        tourLogsViewModel = new TourLogsViewModel();
+        mainWindowViewModel = new MainWindowViewModel(searchBarViewModel, tourOverviewViewModel, tourDetailsViewModel, tourLogsViewModel);
     }
 
     //
@@ -30,6 +34,8 @@ public class ControllerFactory {
             return new TourDetailsController(tourDetailsViewModel);
         } else if (controllerClass == TourOverviewController.class) {
             return new TourOverviewController(tourOverviewViewModel);
+        } else if (controllerClass == TourLogsController.class) {
+            return new TourLogsController(tourLogsViewModel);
         }
         throw new IllegalArgumentException("Unknown controller class: " + controllerClass);
     }

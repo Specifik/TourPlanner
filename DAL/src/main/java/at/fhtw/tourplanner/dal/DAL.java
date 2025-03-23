@@ -5,9 +5,11 @@ import at.fhtw.tourplanner.model.Tour;
 public class DAL {
 
     private final Dao<Tour> tourDao;
+    private final TourLogDao tourLogDao;
 
     private DAL() {
         tourDao = new TourDao();
+        tourLogDao = new TourLogDao();
     }
 
     //
@@ -17,6 +19,12 @@ public class DAL {
         return tourDao;
     }
 
+    //
+    // Tour Logs:
+    //
+    public TourLogDao tourLogDao() {
+        return tourLogDao;
+    }
 
     //
     // Singleton-Pattern for DAL with early-binding

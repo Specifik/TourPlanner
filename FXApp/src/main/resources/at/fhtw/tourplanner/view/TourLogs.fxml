@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="at.fhtw.tourplanner.view.TourLogsController">
+    <ToolBar>
+        <Label text="Tour Logs"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <Button text="+" onAction="#onButtonAddLog">
+            <tooltip>
+                <Tooltip text="Add new log entry"/>
+            </tooltip>
+        </Button>
+        <Button text="-" onAction="#onButtonRemoveLog">
+            <tooltip>
+                <Tooltip text="Remove selected log entry"/>
+            </tooltip>
+        </Button>
+        <Button text="✎" onAction="#onButtonEditLog">
+            <tooltip>
+                <Tooltip text="Edit selected log entry"/>
+            </tooltip>
+        </Button>
+    </ToolBar>
+    <TableView fx:id="tourLogsTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="dateColumn" text="Date"/>
+            <TableColumn fx:id="difficultyColumn" text="Difficulty"/>
+            <TableColumn fx:id="totalTimeColumn" text="Time (min)"/>
+            <TableColumn fx:id="totalDistanceColumn" text="Distance (km)"/>
+            <TableColumn fx:id="ratingColumn" text="Rating"/>
+        </columns>
+    </TableView>
+</VBox>

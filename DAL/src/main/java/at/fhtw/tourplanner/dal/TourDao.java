@@ -9,15 +9,20 @@ public class TourDao implements Dao<Tour> {
     private int nextId = 1;
 
     public TourDao() {
-        // test data
-        tours.add(new Tour(nextId++, "Vienna City Tour", "Stephansplatz", "Schönbrunn Palace"));
-        tours.add(new Tour(nextId++, "Danube Island Biking Tour", "Reichsbrücke", "Floridsdorfer Brücke"));
-        tours.add(new Tour(nextId++, "Wienerwald Hiking Trip", "Hütteldorf", "Sophienalpe"));
+        // Sample test data
+        tours.add(new Tour(nextId++, "Wien Innere Stadt", "Schwedenplatz", "Karlsplatz",
+                "Walking", "Kurzer Spaziergang durch die Altstadt"));
+        tours.add(new Tour(nextId++, "Donauinsel Radweg", "Donauinsel Nord", "Donauinsel Süd",
+                "Biking", "Gemütliche Radtour entlang des Wassers"));
+        tours.add(new Tour(nextId++, "Kahlenberg Wanderung", "Nussdorf", "Kahlenberg",
+                "Hiking", "Steiler Weg nach oben, aber tolle Aussicht"));
     }
 
     @Override
     public Optional<Tour> get(int id) {
-        return Optional.ofNullable(tours.get(id));
+        return tours.stream()
+                .filter(tour -> tour.getId() == id)
+                .findFirst();
     }
 
     @Override
@@ -27,7 +32,7 @@ public class TourDao implements Dao<Tour> {
 
     @Override
     public Tour create() {
-        var tour = new Tour(nextId, "New Media " + nextId,"","");
+        var tour = new Tour(nextId, "New Tour " + nextId, "", "");
         tours.add(tour);
         nextId++;
         return tour;
@@ -35,11 +40,19 @@ public class TourDao implements Dao<Tour> {
 
     @Override
     public void update(Tour tour, List<?> params) {
-        System.out.println(params);
+        System.out.println("Updating tour: " + params);
         tour.setId((Integer) params.get(0));
         tour.setName(Objects.requireNonNull(params.get(1), "Name cannot be null").toString());
         tour.setFrom((params.get(2) == null) ? "" : params.get(2).toString());
         tour.setTo((params.get(3) == null) ? "" : params.get(3).toString());
+
+        // Handle the new fields
+        if (params.size() > 4) {
+            tour.setTransportType((params.get(4) == null) ? "" : params.get(4).toString());
+        }
+        if (params.size() > 5) {
+            tour.setDescription((params.get(5) == null) ? "" : params.get(5).toString());
+        }
     }
 
     @Override

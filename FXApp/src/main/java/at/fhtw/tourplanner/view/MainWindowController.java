@@ -11,8 +11,9 @@ public class MainWindowController {
     // fx:id Attribute of <fx:include> tag + "Controller"
     // tutorial see https://riptutorial.com/javafx/example/7285/nested-controllers
     @FXML private SearchBarController searchBarController;    // injected controller of SearchBar.fxml
-    @FXML private TourOverviewController mediaOverviewController;    // injected controller of TourOverview.fxml
-    @FXML private TourDetailsController mediaDetailsController;    // injected controller of TourDetails.fxml
+    @FXML private TourOverviewController tourOverviewController;
+    @FXML private TourDetailsController tourDetailsController;
+    @FXML private TourLogsController tourLogsController;
 
     private final MainWindowViewModel mainViewModel;
 
@@ -24,14 +25,25 @@ public class MainWindowController {
         return mainViewModel;
     }
 
-    @FXML void initialize() {
+
+    @FXML
+    void initialize() {
+        // This method is called after all @FXML fields have been initialized
+
+        // Make sure the tour logs view model is updated when a tour is selected
+        if (tourLogsController != null && tourOverviewController != null) {
+            tourOverviewController.getTourOverviewViewModel().addSelectionChangedListener(
+                    selectedTour -> tourLogsController.getTourLogsViewModel().setCurrentTour(selectedTour)
+            );
+        }
     }
 
     public void onMenuFileQuitClicked(ActionEvent actionEvent) {
         Platform.exit();
     }
+
     public void onMenuHelpAboutClicked(ActionEvent actionEvent) {
-        Alert aboutBox = new Alert(Alert.AlertType.INFORMATION, "Semesterproject BIF4-SWE2\nby Bernhard Wallisch");
+        Alert aboutBox = new Alert(Alert.AlertType.INFORMATION, "TourPlanner");
         aboutBox.setTitle("About TourPlanner");
         aboutBox.showAndWait();
     }

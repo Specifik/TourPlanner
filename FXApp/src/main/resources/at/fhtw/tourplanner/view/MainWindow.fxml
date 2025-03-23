@@ -57,7 +57,7 @@
         <TitledPane text="Tour Logs" collapsible="false"
                     GridPane.columnIndex="0" GridPane.rowIndex="3"
                     GridPane.columnSpan="2" GridPane.rowSpan="3">
-            <ListView fx:id="tourLogList" VBox.vgrow="ALWAYS" />
+            <fx:include fx:id="tourLogs" source="TourLogs.fxml"/>
         </TitledPane>
 
         <TitledPane text="Tour Details" collapsible="false"

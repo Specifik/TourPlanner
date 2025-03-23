@@ -14,13 +14,16 @@ public class TourDetailsViewModel {
     private final StringProperty name = new SimpleStringProperty();
     private final StringProperty from = new SimpleStringProperty();
     private final StringProperty to = new SimpleStringProperty();
+    private final StringProperty transportType = new SimpleStringProperty();
+    private final StringProperty description = new SimpleStringProperty();
 
     public TourDetailsViewModel() {
-        name.addListener( (arg, oldVal, newVal)->updateTourModel());
+        name.addListener((arg, oldVal, newVal) -> updateTourModel());
         from.addListener((arg, oldVal, newVal) -> updateTourModel());
         to.addListener((arg, oldVal, newVal) -> updateTourModel());
+        transportType.addListener((arg, oldVal, newVal) -> updateTourModel());
+        description.addListener((arg, oldVal, newVal) -> updateTourModel());
     }
-
 
     public String getName() {
         return name.get();
@@ -46,6 +49,22 @@ public class TourDetailsViewModel {
         return to;
     }
 
+    public String getTransportType() {
+        return transportType.get();
+    }
+
+    public StringProperty transportTypeProperty() {
+        return transportType;
+    }
+
+    public String getDescription() {
+        return description.get();
+    }
+
+    public StringProperty descriptionProperty() {
+        return description;
+    }
+
     public void setTourModel(Tour tourModel) {
         isInitValue = true;
         if (tourModel == null) {
@@ -53,25 +72,30 @@ public class TourDetailsViewModel {
             name.set("");
             from.set("");
             to.set("");
+            transportType.set("");
+            description.set("");
             return;
         }
-
-        System.out.println("setTourModel name=" + tourModel.getName() + ", from=" + tourModel.getFrom() + ", plannedTime=" + tourModel.getTo());
 
         this.tourModel = tourModel;
         name.setValue(tourModel.getName());
         from.setValue(tourModel.getFrom());
         to.setValue(tourModel.getTo());
+        transportType.setValue(tourModel.getTransportType());
+        description.setValue(tourModel.getDescription());
         isInitValue = false;
     }
 
     private void updateTourModel() {
-        if( !isInitValue && tourModel != null)
+        if (!isInitValue && tourModel != null) {
             DAL.getInstance().tourDao().update(tourModel, Arrays.asList(
                     tourModel.getId(),
                     name.get(),
                     from.get(),
-                    to.get()
+                    to.get(),
+                    transportType.get(),
+                    description.get()
             ));
+        }
     }
 }

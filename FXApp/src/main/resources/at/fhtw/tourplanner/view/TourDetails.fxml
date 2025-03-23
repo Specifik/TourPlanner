@@ -17,13 +17,24 @@
         <rowConstraints>
             <RowConstraints minHeight="30" />
             <RowConstraints minHeight="30" />
+            <RowConstraints minHeight="30" />
+            <RowConstraints minHeight="30" />
             <RowConstraints vgrow="ALWAYS" />
         </rowConstraints>
 
+        <!-- From/To -->
         <Label text="From:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
         <TextField fx:id="fromTextField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
         <Label text="To:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
         <TextField fx:id="toTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+        <!-- Transport Type -->
+        <Label text="Transport Type:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <ComboBox fx:id="transportTypeComboBox" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="150" />
+
+        <!-- Description -->
+        <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.valignment="TOP" />
+        <TextArea fx:id="descriptionTextArea" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.rowSpan="2" wrapText="true" />
     </GridPane>
 </VBox>

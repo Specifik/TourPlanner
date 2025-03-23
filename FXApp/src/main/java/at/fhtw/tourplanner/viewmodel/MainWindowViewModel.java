@@ -7,11 +7,13 @@ public class MainWindowViewModel {
     private SearchBarViewModel searchBarViewModel;
     private TourOverviewViewModel tourOverviewViewModel;
     private TourDetailsViewModel tourDetailsViewModel;
+    private TourLogsViewModel tourLogsViewModel;
 
-    public MainWindowViewModel(SearchBarViewModel searchBarViewModel, TourOverviewViewModel tourOverviewViewModel, TourDetailsViewModel tourDetailsViewModel) {
+    public MainWindowViewModel(SearchBarViewModel searchBarViewModel, TourOverviewViewModel tourOverviewViewModel, TourDetailsViewModel tourDetailsViewModel, TourLogsViewModel tourLogsViewModel) {
         this.searchBarViewModel = searchBarViewModel;
         this.tourOverviewViewModel = tourOverviewViewModel;
         this.tourDetailsViewModel = tourDetailsViewModel;
+        this.tourLogsViewModel = tourLogsViewModel;
 
         this.searchBarViewModel.addSearchListener(searchString -> searchTours(searchString));
         // instead of the lambda-expression from above, you also can use the following "classical" event-handler implementation with anonymous inner classes
@@ -23,7 +25,12 @@ public class MainWindowViewModel {
 //            }
 //        });
 
-        this.tourOverviewViewModel.addSelectionChangedListener(selectedTour->selectTour(selectedTour));
+        this.tourOverviewViewModel.addSelectionChangedListener(selectedTour -> {
+            selectTour(selectedTour);
+            if (selectedTour != null) {
+                tourLogsViewModel.setCurrentTour(selectedTour);
+            }
+        });
     }
 
     private void selectTour(Tour selectedTour) {
