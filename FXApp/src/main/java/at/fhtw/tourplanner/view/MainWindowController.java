@@ -29,6 +29,7 @@ public class MainWindowController {
     private final MainWindowViewModel mainWindowViewModel;
     private Tab tourLogTab = null;
     private TourLogDetailsController tourLogDetailsController = null;
+    private Tab tourDetailsTab = null;  // Reference to the Tour Details tab
 
     public MainWindowController(MainWindowViewModel mainWindowViewModel) {
         this.mainWindowViewModel = mainWindowViewModel;
@@ -42,11 +43,22 @@ public class MainWindowController {
     void initialize() {
         // This method is called after all @FXML fields have been initialized
 
+        // Store reference to the Tour Details tab (should be the first tab)
+        if (detailsTabPane.getTabs().size() > 0) {
+            tourDetailsTab = detailsTabPane.getTabs().get(0);
+        }
+
         // Make sure the tour logs view model is updated when a tour is selected
         if (tourLogsController != null && tourOverviewController != null) {
-            tourOverviewController.getTourOverviewViewModel().addSelectionChangedListener(
-                    selectedTour -> tourLogsController.getTourLogsViewModel().setCurrentTour(selectedTour)
-            );
+            tourOverviewController.getTourOverviewViewModel().addSelectionChangedListener(selectedTour -> {
+                // When a tour is selected, switch to the Tour Details tab
+                if (tourDetailsTab != null) {
+                    detailsTabPane.getSelectionModel().select(tourDetailsTab);
+                }
+
+                // Update tour logs with the selected tour
+                tourLogsController.getTourLogsViewModel().setCurrentTour(selectedTour);
+            });
         }
 
         // Add listener for opening tour log details

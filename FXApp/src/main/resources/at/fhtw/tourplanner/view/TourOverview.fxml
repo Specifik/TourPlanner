@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="at.fhtw.tourplanner.view.TourOverviewController">
     <ToolBar>
         <Label text="Tours"/>
         <Pane HBox.hgrow="ALWAYS"/>
-        <Button text="+" onAction="#onButtonAdd"/>
-        <Button text="-" onAction="#onButtonRemove"/>
+        <Button text="+" onAction="#onButtonAdd">
+            <tooltip>
+                <Tooltip text="Add new tour"/>
+            </tooltip>
+        </Button>
+        <Button text="-" onAction="#onButtonRemove">
+            <tooltip>
+                <Tooltip text="Remove selected tour"/>
+            </tooltip>
+        </Button>
     </ToolBar>
     <ListView fx:id="tourList" VBox.vgrow="ALWAYS"/>
 </VBox>

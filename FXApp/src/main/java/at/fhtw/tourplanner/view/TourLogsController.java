@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.time.LocalDateTime;
@@ -30,6 +31,9 @@ public class TourLogsController {
 
     @FXML
     private TableColumn<TourLog, Integer> ratingColumn;
+
+    @FXML
+    private TableColumn<TourLog, String> commentColumn;
 
     private final TourLogsViewModel tourLogsViewModel;
 
@@ -64,6 +68,32 @@ public class TourLogsController {
         totalTimeColumn.setCellValueFactory(new PropertyValueFactory<>("totalTime"));
         totalDistanceColumn.setCellValueFactory(new PropertyValueFactory<>("totalDistance"));
         ratingColumn.setCellValueFactory(new PropertyValueFactory<>("rating"));
+
+        // Configure comments column
+        commentColumn.setCellValueFactory(new PropertyValueFactory<>("comment"));
+        // Add tooltip for comments that might be too long
+        commentColumn.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setText(null);
+                    setTooltip(null);
+                } else {
+                    // Truncate long comments in display
+                    String displayText = item.length() > 30 ? item.substring(0, 27) + "..." : item;
+                    setText(displayText);
+
+                    // Add tooltip for full text
+                    if (item.length() > 30) {
+                        setTooltip(new Tooltip(item));
+                    } else {
+                        setTooltip(null);
+                    }
+                }
+            }
+        });
 
         // Bind the table to the view model
         tourLogsTable.setItems(tourLogsViewModel.getObservableTourLogs());

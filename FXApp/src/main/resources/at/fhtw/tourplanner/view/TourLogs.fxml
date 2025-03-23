@@ -26,11 +26,12 @@
     </ToolBar>
     <TableView fx:id="tourLogsTable" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="dateColumn" text="Date"/>
-            <TableColumn fx:id="difficultyColumn" text="Difficulty"/>
-            <TableColumn fx:id="totalTimeColumn" text="Time (min)"/>
-            <TableColumn fx:id="totalDistanceColumn" text="Distance (km)"/>
-            <TableColumn fx:id="ratingColumn" text="Rating"/>
+            <TableColumn fx:id="dateColumn" text="Date" prefWidth="100"/>
+            <TableColumn fx:id="difficultyColumn" text="Difficulty" prefWidth="80"/>
+            <TableColumn fx:id="totalTimeColumn" text="Time (min)" prefWidth="80"/>
+            <TableColumn fx:id="totalDistanceColumn" text="Distance (km)" prefWidth="80"/>
+            <TableColumn fx:id="ratingColumn" text="Rating" prefWidth="60"/>
+            <TableColumn fx:id="commentColumn" text="Comment" prefWidth="200"/>
         </columns>
     </TableView>
 </VBox>

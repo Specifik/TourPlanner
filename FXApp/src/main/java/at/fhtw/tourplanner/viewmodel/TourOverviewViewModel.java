@@ -19,10 +19,10 @@ public class TourOverviewViewModel {
 
     private List<SelectionChangedListener> listeners = new ArrayList<>();
     private final ObjectProperty<Tour> selectedTour = new SimpleObjectProperty<>();
-    private ObservableList<Tour> observableTours = FXCollections.observableArrayList();
+    private final ObservableList<Tour> observableTours = FXCollections.observableArrayList();
 
     public TourOverviewViewModel() {
-        setTours(DAL.getInstance().tourDao().getAll());
+        refreshTours();
 
         // Listen to our own selection property
         selectedTour.addListener((obs, oldVal, newVal) -> {
@@ -61,12 +61,13 @@ public class TourOverviewViewModel {
         Tour currentSelection = selectedTour.get();
         int selectedId = currentSelection != null ? currentSelection.getId() : -1;
 
-        // Create a completely new observable list
-        ObservableList<Tour> newList = FXCollections.observableArrayList(tours);
-        observableTours = newList;
+        // Update the observable list
+        observableTours.clear();
+        observableTours.addAll(tours);
 
-        // Find the equivalent tour in the new list if we had a selection
+        // Try to restore the selection if we had one
         if (selectedId != -1) {
+            // Find the equivalent tour in the new list
             for (Tour tour : tours) {
                 if (tour.getId() == selectedId) {
                     // Update our selection
@@ -83,44 +84,49 @@ public class TourOverviewViewModel {
     }
 
     public void handleTourUpdated(Tour updatedTour) {
-        // Force refresh
-        Platform.runLater(() -> {
-            // Refresh the list directly from the DAO
-            List<Tour> freshTours = DAL.getInstance().tourDao().getAll();
-
-            // Clear and re-add all items
-            observableTours.clear();
-            observableTours.addAll(freshTours);
-
-            // Re-select the updated tour
-            if (updatedTour != null) {
-                for (Tour tour : observableTours) {
-                    if (tour.getId() == updatedTour.getId()) {
-                        selectedTour.set(tour);
-                        break;
-                    }
-                }
-            }
-        });
-    }
-
-    public void addNewTour() {
-        var tour = DAL.getInstance().tourDao().create();
+        // Refresh the list to get the latest data
         refreshTours();
 
-        // Find and select the new tour
-        for (Tour t : observableTours) {
-            if (t.getId() == tour.getId()) {
-                selectedTour.set(t);
-                break;
+        // Re-select the updated tour
+        if (updatedTour != null) {
+            for (Tour tour : observableTours) {
+                if (tour.getId() == updatedTour.getId()) {
+                    selectedTour.set(tour);
+                    break;
+                }
             }
         }
     }
 
-    public void deleteTour(Tour tour) {
-        DAL.getInstance().tourDao().delete(tour);
-        selectedTour.set(null);
+    public Tour addNewTour() {
+        // Create a new tour in the DAO
+        Tour newTour = DAL.getInstance().tourDao().create();
+
+        // Refresh to get the latest list
         refreshTours();
+
+        // Find and return the newly created tour
+        for (Tour tour : observableTours) {
+            if (tour.getId() == newTour.getId()) {
+                selectedTour.set(tour);
+                return tour;
+            }
+        }
+
+        return newTour;
+    }
+
+    public void deleteTour(Tour tour) {
+        if (tour != null) {
+            // First set selection to null to avoid issues
+            selectedTour.set(null);
+
+            // Delete from DAO
+            DAL.getInstance().tourDao().delete(tour);
+
+            // Refresh list
+            refreshTours();
+        }
     }
 
     // Getter for selected tour property
