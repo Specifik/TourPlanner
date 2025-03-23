@@ -11,7 +11,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 
@@ -55,6 +54,11 @@ public class MainWindowController {
             tourLogsController.getTourLogsViewModel().addTourLogDetailsOpenListener(
                     this::showTourLogDetails
             );
+
+            // Add listener for closing tour log details
+            tourLogsController.getTourLogsViewModel().addTourLogDetailsCloseListener(
+                    this::closeTourLogDetails
+            );
         }
 
         // Add listener for tour updates to forcibly refresh the list view
@@ -85,6 +89,9 @@ public class MainWindowController {
                 tourLogDetailsController.getViewModel().addLogUpdatedListener(
                         updatedLog -> tourLogsController.getTourLogsViewModel().handleLogUpdated(updatedLog)
                 );
+
+                // Don't close the tab when saving
+                tourLogDetailsController.getViewModel().setAutoCloseOnSave(false);
 
                 tourLogTab = new Tab("Tour Log Details", root);
                 tourLogTab.setClosable(true);
@@ -122,6 +129,14 @@ public class MainWindowController {
 
             // Update the controller with the new tour log
             tourLogDetailsController.getViewModel().setTourLog(tourLog, false);
+        }
+    }
+
+    private void closeTourLogDetails(TourLog tourLog) {
+        if (tourLogTab != null) {
+            detailsTabPane.getTabs().remove(tourLogTab);
+            tourLogTab = null;
+            tourLogDetailsController = null;
         }
     }
 

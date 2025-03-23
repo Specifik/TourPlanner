@@ -40,11 +40,47 @@ public class TourDetailsController {
 
     @FXML
     void initialize() {
+        // Set up data binding
         nameTextField.textProperty().bindBidirectional(tourDetailsViewModel.nameProperty());
         fromTextField.textProperty().bindBidirectional(tourDetailsViewModel.fromProperty());
         toTextField.textProperty().bindBidirectional(tourDetailsViewModel.toProperty());
         transportTypeComboBox.valueProperty().bindBidirectional(tourDetailsViewModel.transportTypeProperty());
         descriptionTextArea.textProperty().bindBidirectional(tourDetailsViewModel.descriptionProperty());
+
+        // Set up tooltips
+        nameTextField.setTooltip(new Tooltip("Enter a name for the tour"));
+        fromTextField.setTooltip(new Tooltip("Enter the starting location"));
+        toTextField.setTooltip(new Tooltip("Enter the destination"));
+        transportTypeComboBox.setTooltip(new Tooltip("Select the mode of transportation"));
+    }
+
+    private boolean validateInputs() {
+        boolean isValid = true;
+        StringBuilder errorMessage = new StringBuilder("Please fix the following errors:\n");
+
+        // Validate name
+        if (nameTextField.getText() == null || nameTextField.getText().trim().isEmpty()) {
+            errorMessage.append("- Tour name cannot be empty\n");
+            isValid = false;
+        }
+
+        // Validate from
+        if (fromTextField.getText() == null || fromTextField.getText().trim().isEmpty()) {
+            errorMessage.append("- Starting location cannot be empty\n");
+            isValid = false;
+        }
+
+        // Validate to
+        if (toTextField.getText() == null || toTextField.getText().trim().isEmpty()) {
+            errorMessage.append("- Destination cannot be empty\n");
+            isValid = false;
+        }
+
+        if (!isValid) {
+            showErrorMessage(errorMessage.toString());
+        }
+
+        return isValid;
     }
 
     @FXML
@@ -54,7 +90,6 @@ public class TourDetailsController {
             if (!success) {
                 showErrorMessage("Failed to save tour");
             }
-            // No success message - just silently succeed
         }
     }
 
@@ -64,29 +99,10 @@ public class TourDetailsController {
         tourDetailsViewModel.resetToOriginal();
     }
 
-    private boolean validateInputs() {
-        if (nameTextField.getText() == null || nameTextField.getText().trim().isEmpty()) {
-            showErrorMessage("Tour name cannot be empty");
-            return false;
-        }
-
-        if (fromTextField.getText() == null || fromTextField.getText().trim().isEmpty()) {
-            showErrorMessage("From location cannot be empty");
-            return false;
-        }
-
-        if (toTextField.getText() == null || toTextField.getText().trim().isEmpty()) {
-            showErrorMessage("To location cannot be empty");
-            return false;
-        }
-
-        return true;
-    }
-
     private void showErrorMessage(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
+        alert.setTitle("Validation Error");
+        alert.setHeaderText("Cannot save tour");
         alert.setContentText(message);
         alert.showAndWait();
     }

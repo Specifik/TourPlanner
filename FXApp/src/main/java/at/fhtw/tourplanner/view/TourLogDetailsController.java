@@ -8,8 +8,7 @@ import javafx.scene.control.*;
 import javafx.util.StringConverter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class TourLogDetailsController {
     @FXML
@@ -59,11 +58,38 @@ public class TourLogDetailsController {
 
     @FXML
     void initialize() {
+        // Set up DatePicker format
+        dateField.setConverter(new StringConverter<LocalDate>() {
+            private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
+            @Override
+            public String toString(LocalDate date) {
+                if (date != null) {
+                    return dateFormatter.format(date);
+                } else {
+                    return "";
+                }
+            }
+
+            @Override
+            public LocalDate fromString(String string) {
+                if (string != null && !string.isEmpty()) {
+                    return LocalDate.parse(string, dateFormatter);
+                } else {
+                    return null;
+                }
+            }
+        });
+
+        // Set up tooltips
+        dateField.setTooltip(new Tooltip("Select the date of the tour"));
+        difficultyField.setTooltip(new Tooltip("Select the difficulty level"));
+        distanceField.setTooltip(new Tooltip("Enter the total distance in km"));
+        timeField.setTooltip(new Tooltip("Enter the total time in minutes"));
+
         // Bind UI elements to the view model properties
         dateField.valueProperty().bindBidirectional(viewModel.dateProperty());
         difficultyField.valueProperty().bindBidirectional(viewModel.difficultyProperty());
-
-        // Set up numeric text fields
         distanceField.textProperty().bindBidirectional(viewModel.distanceStringProperty());
         timeField.textProperty().bindBidirectional(viewModel.timeStringProperty());
 
@@ -89,24 +115,89 @@ public class TourLogDetailsController {
         commentField.textProperty().bindBidirectional(viewModel.commentProperty());
     }
 
+    private boolean validateInputs() {
+        boolean isValid = true;
+        StringBuilder errorMessage = new StringBuilder("Please fix the following errors:\n");
+
+        // Validate date
+        if (dateField.getValue() == null) {
+            errorMessage.append("- Date is required\n");
+            isValid = false;
+        } else if (dateField.getValue().isAfter(LocalDate.now())) {
+            errorMessage.append("- Date cannot be in the future\n");
+            isValid = false;
+        }
+
+        // Validate difficulty
+        if (difficultyField.getValue() == null || difficultyField.getValue().trim().isEmpty()) {
+            errorMessage.append("- Difficulty is required\n");
+            isValid = false;
+        }
+
+        // Validate distance
+        try {
+            if (distanceField.getText() == null || distanceField.getText().trim().isEmpty()) {
+                errorMessage.append("- Distance is required\n");
+                isValid = false;
+            } else {
+                double distance = Double.parseDouble(distanceField.getText());
+                if (distance < 0) {
+                    errorMessage.append("- Distance cannot be negative\n");
+                    isValid = false;
+                }
+            }
+        } catch (NumberFormatException e) {
+            errorMessage.append("- Distance must be a valid number\n");
+            isValid = false;
+        }
+
+        // Validate time
+        try {
+            if (timeField.getText() == null || timeField.getText().trim().isEmpty()) {
+                errorMessage.append("- Time is required\n");
+                isValid = false;
+            } else {
+                int time = Integer.parseInt(timeField.getText());
+                if (time < 0) {
+                    errorMessage.append("- Time cannot be negative\n");
+                    isValid = false;
+                }
+            }
+        } catch (NumberFormatException e) {
+            errorMessage.append("- Time must be a valid number\n");
+            isValid = false;
+        }
+
+        if (!isValid) {
+            showErrorMessage(errorMessage.toString());
+        }
+
+        return isValid;
+    }
+
     @FXML
     void onSaveClicked(ActionEvent event) {
-        if (viewModel.saveTourLog()) {
-            // Close the tab or panel
-            viewModel.closeDetails();
-        } else {
-            // Show validation errors
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Validation Error");
-            alert.setHeaderText("Cannot save tour log");
-            alert.setContentText(viewModel.getValidationErrors());
-            alert.showAndWait();
+        if (validateInputs()) {
+            if (viewModel.saveTourLog()) {
+                // Successfully saved - do nothing, let the view model handle it
+            } else {
+                // Show validation errors from view model
+                showErrorMessage("Cannot save tour log: " + viewModel.getValidationErrors());
+            }
         }
     }
 
     @FXML
     void onCancelClicked(ActionEvent event) {
         viewModel.closeDetails();
+    }
+
+    private void showErrorMessage(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Validation Error");
+        alert.setHeaderText("Cannot save tour log");
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     public TourLogDetailsViewModel getViewModel() {

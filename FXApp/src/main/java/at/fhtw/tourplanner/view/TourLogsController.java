@@ -45,11 +45,7 @@ public class TourLogsController {
     void initialize() {
         // Configure the table columns
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("dateTime"));
-        difficultyColumn.setCellValueFactory(new PropertyValueFactory<>("difficulty"));
-        totalTimeColumn.setCellValueFactory(new PropertyValueFactory<>("totalTime"));
-        totalDistanceColumn.setCellValueFactory(new PropertyValueFactory<>("totalDistance"));
-        ratingColumn.setCellValueFactory(new PropertyValueFactory<>("rating"));
-
+        // Custom cell factory for date formatting
         dateColumn.setCellFactory(column -> new TableCell<>() {
             private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
@@ -63,6 +59,11 @@ public class TourLogsController {
                 }
             }
         });
+
+        difficultyColumn.setCellValueFactory(new PropertyValueFactory<>("difficulty"));
+        totalTimeColumn.setCellValueFactory(new PropertyValueFactory<>("totalTime"));
+        totalDistanceColumn.setCellValueFactory(new PropertyValueFactory<>("totalDistance"));
+        ratingColumn.setCellValueFactory(new PropertyValueFactory<>("rating"));
 
         // Bind the table to the view model
         tourLogsTable.setItems(tourLogsViewModel.getObservableTourLogs());
@@ -91,11 +92,20 @@ public class TourLogsController {
 
     @FXML
     void onButtonRemoveLog(ActionEvent event) {
-        tourLogsViewModel.deleteTourLog(tourLogsTable.getSelectionModel().getSelectedItem());
+        TourLog selectedLog = tourLogsTable.getSelectionModel().getSelectedItem();
+        if (selectedLog != null) {
+            // Close any open detail tab for this log first
+            tourLogsViewModel.closeTourLogDetails(selectedLog);
+            // Then delete the log
+            tourLogsViewModel.deleteTourLog(selectedLog);
+        }
     }
 
     @FXML
     void onButtonEditLog(ActionEvent event) {
-        tourLogsViewModel.editTourLog(tourLogsTable.getSelectionModel().getSelectedItem());
+        TourLog selectedLog = tourLogsTable.getSelectionModel().getSelectedItem();
+        if (selectedLog != null) {
+            tourLogsViewModel.editTourLog(selectedLog);
+        }
     }
 }

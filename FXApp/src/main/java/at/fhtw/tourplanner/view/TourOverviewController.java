@@ -36,13 +36,18 @@ public class TourOverviewController {
         });
     }
 
+    @FXML
     public void onButtonAdd(ActionEvent actionEvent) {
         tourOverviewViewModel.addNewTour();
         tourList.refresh(); // Force a UI refresh
     }
 
+    @FXML
     public void onButtonRemove(ActionEvent actionEvent) {
-        tourOverviewViewModel.deleteTour(tourList.getSelectionModel().getSelectedItem());
-        tourList.refresh(); // Force a UI refresh
+        Tour selectedTour = tourList.getSelectionModel().getSelectedItem();
+        if (selectedTour != null) {
+            tourOverviewViewModel.deleteTour(selectedTour);
+            tourList.refresh(); // Force a UI refresh
+        }
     }
 }

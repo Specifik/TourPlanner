@@ -7,6 +7,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.application.Platform;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,7 +22,12 @@ public class TourLogsViewModel {
         void openTourLogDetails(TourLog tourLog);
     }
 
+    public interface TourLogDetailsCloseListener {
+        void closeTourLogDetails(TourLog tourLog);
+    }
+
     private final List<TourLogDetailsOpenListener> tourLogDetailsOpenListeners = new ArrayList<>();
+    private final List<TourLogDetailsCloseListener> tourLogDetailsCloseListeners = new ArrayList<>();
 
     public TourLogsViewModel() {
         // When the current tour changes, update the tour logs list
@@ -63,7 +69,7 @@ public class TourLogsViewModel {
     // Method to refresh the tour logs list
     public void refreshTourLogs() {
         if (currentTour.get() != null) {
-            loadTourLogs(currentTour.get().getId());
+            Platform.runLater(() -> loadTourLogs(currentTour.get().getId()));
         }
     }
 
@@ -76,7 +82,7 @@ public class TourLogsViewModel {
         Tour tour = currentTour.get();
         if (tour != null && DAL.getInstance().tourLogDao() != null) {
             TourLog newLog = DAL.getInstance().tourLogDao().create(tour.getId());
-            observableTourLogs.add(newLog);
+            refreshTourLogs(); // Reload to get the fresh list
             openTourLogDetails(newLog);
         }
     }
@@ -84,7 +90,7 @@ public class TourLogsViewModel {
     public void deleteTourLog(TourLog tourLog) {
         if (tourLog != null && DAL.getInstance().tourLogDao() != null) {
             DAL.getInstance().tourLogDao().delete(tourLog);
-            observableTourLogs.remove(tourLog);
+            refreshTourLogs();
         }
     }
 
@@ -114,11 +120,27 @@ public class TourLogsViewModel {
         }
     }
 
+    public void closeTourLogDetails(TourLog tourLog) {
+        if (tourLog != null) {
+            for (TourLogDetailsCloseListener listener : tourLogDetailsCloseListeners) {
+                listener.closeTourLogDetails(tourLog);
+            }
+        }
+    }
+
     public void addTourLogDetailsOpenListener(TourLogDetailsOpenListener listener) {
         tourLogDetailsOpenListeners.add(listener);
     }
 
     public void removeTourLogDetailsOpenListener(TourLogDetailsOpenListener listener) {
         tourLogDetailsOpenListeners.remove(listener);
+    }
+
+    public void addTourLogDetailsCloseListener(TourLogDetailsCloseListener listener) {
+        tourLogDetailsCloseListeners.add(listener);
+    }
+
+    public void removeTourLogDetailsCloseListener(TourLogDetailsCloseListener listener) {
+        tourLogDetailsCloseListeners.remove(listener);
     }
 }

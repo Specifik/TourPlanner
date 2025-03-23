@@ -14,6 +14,7 @@ import java.util.List;
 public class TourLogDetailsViewModel {
     private TourLog tourLog;
     private boolean isNewLog;
+    private boolean autoCloseOnSave = true;
 
     // Properties for binding with UI
     private final ObjectProperty<LocalDate> date = new SimpleObjectProperty<>();
@@ -37,6 +38,10 @@ public class TourLogDetailsViewModel {
     private final List<LogUpdatedListener> logUpdatedListeners = new ArrayList<>();
 
     public TourLogDetailsViewModel() {
+    }
+
+    public void setAutoCloseOnSave(boolean autoCloseOnSave) {
+        this.autoCloseOnSave = autoCloseOnSave;
     }
 
     public void setTourLog(TourLog tourLog, boolean isNewLog) {
@@ -112,6 +117,11 @@ public class TourLogDetailsViewModel {
                 listener.onLogUpdated(tourLog);
             }
 
+            // Only close if autoCloseOnSave is true
+            if (autoCloseOnSave) {
+                closeDetails();
+            }
+
             return true;
         }
 
@@ -119,7 +129,7 @@ public class TourLogDetailsViewModel {
     }
 
     public boolean validateInput() {
-        // Check that all required fields are filled
+        // Basic validation checks
         if (date.get() == null) {
             validationErrors = "Date is required";
             return false;

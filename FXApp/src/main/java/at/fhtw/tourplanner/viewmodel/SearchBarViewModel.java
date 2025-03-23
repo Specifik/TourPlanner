@@ -1,7 +1,5 @@
 package at.fhtw.tourplanner.viewmodel;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -9,38 +7,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SearchBarViewModel {
+    private final StringProperty searchText = new SimpleStringProperty("");
+    private final StringProperty searchScope = new SimpleStringProperty("All");
+
     public interface SearchListener {
-        void search(String searchString);
+        void onSearch(String searchText, String searchScope);
     }
 
-    private List<SearchListener> listeners = new ArrayList<>();
+    private final List<SearchListener> searchListeners = new ArrayList<>();
 
-    private final StringProperty searchString = new SimpleStringProperty("");
-    private final BooleanBinding isSearchDisabledBinding = Bindings.createBooleanBinding( ()->searchString.get().isEmpty() );
-
-    public SearchBarViewModel() {
-        searchString.addListener( (arg, oldVal, newVal)->isSearchDisabledBinding.invalidate() );
+    public StringProperty searchTextProperty() {
+        return searchText;
     }
 
-    public StringProperty searchStringProperty() {
-        return searchString;
-    }
-
-    public BooleanBinding searchDisabledBinding() {
-        return isSearchDisabledBinding;
+    public StringProperty searchScopeProperty() {
+        return searchScope;
     }
 
     public void addSearchListener(SearchListener listener) {
-        listeners.add(listener);
+        searchListeners.add(listener);
     }
 
-    public void removeSearchListener(SearchListener listener) {
-        listeners.remove(listener);
-    }
-
-    public void doSearch() {
-        for (var listener : listeners ) {
-            listener.search(searchString.get());
+    public void search() {
+        // Notify all listeners with the current search text and scope
+        for (SearchListener listener : searchListeners) {
+            listener.onSearch(searchText.get(), searchScope.get());
         }
+    }
+
+    public void clearSearch() {
+        searchText.set("");
+        // Trigger a search with empty text to show all items
+        search();
     }
 }
