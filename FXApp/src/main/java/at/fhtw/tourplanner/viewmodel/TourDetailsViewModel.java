@@ -2,6 +2,8 @@ package at.fhtw.tourplanner.viewmodel;
 
 import at.fhtw.tourplanner.dal.DAL;
 import at.fhtw.tourplanner.model.Tour;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -25,6 +27,9 @@ public class TourDetailsViewModel {
     private final StringProperty transportType = new SimpleStringProperty();
     private final StringProperty description = new SimpleStringProperty();
 
+    private final BooleanProperty isValidInput = new SimpleBooleanProperty(false);
+    private final StringProperty validationErrors = new SimpleStringProperty("");
+
     public interface TourUpdatedListener {
         void onTourUpdated(Tour updatedTour);
     }
@@ -32,6 +37,62 @@ public class TourDetailsViewModel {
     private final List<TourUpdatedListener> tourUpdatedListeners = new ArrayList<>();
 
     public TourDetailsViewModel() {
+        // listeners for validation
+        name.addListener((obs, oldVal, newVal) -> validateInput());
+        from.addListener((obs, oldVal, newVal) -> validateInput());
+        to.addListener((obs, oldVal, newVal) -> validateInput());
+    }
+
+    private void validateInput() {
+        if (isInitValue) {
+            return;
+        }
+
+        StringBuilder errorMessage = new StringBuilder();
+        boolean isValid = true;
+
+        // validate name
+        if (name.get() == null || name.get().trim().isEmpty()) {
+            errorMessage.append("• Tour name cannot be empty\n");
+            isValid = false;
+        } else if (name.get().trim().length() > 100) {
+            errorMessage.append("• Tour name cannot exceed 100 characters\n");
+            isValid = false;
+        }
+
+        // validate from location
+        if (from.get() == null || from.get().trim().isEmpty()) {
+            errorMessage.append("• Starting location cannot be empty\n");
+            isValid = false;
+        } else if (from.get().trim().length() > 100) {
+            errorMessage.append("• Starting location cannot exceed 100 characters\n");
+            isValid = false;
+        }
+
+        // validate to location
+        if (to.get() == null || to.get().trim().isEmpty()) {
+            errorMessage.append("• Destination cannot be empty\n");
+            isValid = false;
+        } else if (to.get().trim().length() > 100) {
+            errorMessage.append("• Destination cannot exceed 100 characters\n");
+            isValid = false;
+        }
+
+        // Check if from = to
+        if (isValid && from.get() != null && to.get() != null &&
+                from.get().trim().equalsIgnoreCase(to.get().trim())) {
+            errorMessage.append("• Starting location and destination cannot be the same\n");
+            isValid = false;
+        }
+
+        // validate description length
+        if (description.get() != null && description.get().length() > 500) {
+            errorMessage.append("• Description cannot exceed 500 characters\n");
+            isValid = false;
+        }
+
+        isValidInput.set(isValid);
+        validationErrors.set(errorMessage.toString());
     }
 
     public String getName() {
@@ -74,6 +135,22 @@ public class TourDetailsViewModel {
         return description;
     }
 
+    public boolean isValidInput() {
+        return isValidInput.get();
+    }
+
+    public BooleanProperty isValidInputProperty() {
+        return isValidInput;
+    }
+
+    public String getValidationErrors() {
+        return validationErrors.get();
+    }
+
+    public StringProperty validationErrorsProperty() {
+        return validationErrors;
+    }
+
     public void setTourModel(Tour tourModel) {
         isInitValue = true;
         if (tourModel == null) {
@@ -83,13 +160,14 @@ public class TourDetailsViewModel {
             transportType.set("");
             description.set("");
 
-            // Reset originals
             originalName = "";
             originalFrom = "";
             originalTo = "";
             originalTransportType = "";
             originalDescription = "";
 
+            isInitValue = false;
+            validateInput();
             return;
         }
 
@@ -110,6 +188,7 @@ public class TourDetailsViewModel {
         originalDescription = tourModel.getDescription();
 
         isInitValue = false;
+        validateInput();
     }
 
     public void resetToOriginal() {
@@ -123,18 +202,21 @@ public class TourDetailsViewModel {
             description.setValue(originalDescription);
 
             isInitValue = false;
+            validateInput();
         }
     }
 
     public boolean saveTour() {
-        if (tourModel == null) {
+        validateInput();
+
+        if (!isValidInput.get() || tourModel == null) {
             return false;
         }
 
         try {
-            tourModel.setName(name.get());
-            tourModel.setFrom(from.get());
-            tourModel.setTo(to.get());
+            tourModel.setName(name.get().trim());
+            tourModel.setFrom(from.get().trim());
+            tourModel.setTo(to.get().trim());
             tourModel.setTransportType(transportType.get());
             tourModel.setDescription(description.get());
 

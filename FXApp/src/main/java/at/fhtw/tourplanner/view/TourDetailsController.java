@@ -28,6 +28,9 @@ public class TourDetailsController {
     @FXML
     public Button cancelButton;
 
+    @FXML
+    public Label validationLabel;
+
     private final TourDetailsViewModel tourDetailsViewModel;
 
     public TourDetailsController(TourDetailsViewModel tourDetailsViewModel) {
@@ -40,53 +43,38 @@ public class TourDetailsController {
 
     @FXML
     void initialize() {
-        // Set up data binding
+        // data binding
         nameTextField.textProperty().bindBidirectional(tourDetailsViewModel.nameProperty());
         fromTextField.textProperty().bindBidirectional(tourDetailsViewModel.fromProperty());
         toTextField.textProperty().bindBidirectional(tourDetailsViewModel.toProperty());
         transportTypeComboBox.valueProperty().bindBidirectional(tourDetailsViewModel.transportTypeProperty());
         descriptionTextArea.textProperty().bindBidirectional(tourDetailsViewModel.descriptionProperty());
 
-        // Set up tooltips
-        nameTextField.setTooltip(new Tooltip("Enter a name for the tour"));
-        fromTextField.setTooltip(new Tooltip("Enter the starting location"));
-        toTextField.setTooltip(new Tooltip("Enter the destination"));
+        saveTourButton.disableProperty().bind(tourDetailsViewModel.isValidInputProperty().not());
+
+        if (validationLabel != null) {
+            validationLabel.textProperty().bind(tourDetailsViewModel.validationErrorsProperty());
+            validationLabel.visibleProperty().bind(tourDetailsViewModel.isValidInputProperty().not());
+            validationLabel.setStyle("-fx-text-fill: red; -fx-font-size: 11px;");
+        }
+
+        // tooltips
+        nameTextField.setTooltip(new Tooltip("Enter a name for the tour (max 100 characters)"));
+        fromTextField.setTooltip(new Tooltip("Enter the starting location (max 100 characters)"));
+        toTextField.setTooltip(new Tooltip("Enter the destination (max 100 characters)"));
         transportTypeComboBox.setTooltip(new Tooltip("Select the mode of transportation"));
-    }
+        descriptionTextArea.setTooltip(new Tooltip("Enter a description (max 500 characters)"));
 
-    private boolean validateInputs() {
-        boolean isValid = true;
-        StringBuilder errorMessage = new StringBuilder("Please fix the following errors:\n");
 
-        if (nameTextField.getText() == null || nameTextField.getText().trim().isEmpty()) {
-            errorMessage.append("- Tour name cannot be empty\n");
-            isValid = false;
-        }
-
-        if (fromTextField.getText() == null || fromTextField.getText().trim().isEmpty()) {
-            errorMessage.append("- Starting location cannot be empty\n");
-            isValid = false;
-        }
-
-        if (toTextField.getText() == null || toTextField.getText().trim().isEmpty()) {
-            errorMessage.append("- Destination cannot be empty\n");
-            isValid = false;
-        }
-
-        if (!isValid) {
-            showErrorMessage(errorMessage.toString());
-        }
-
-        return isValid;
     }
 
     @FXML
     void onSaveTourClicked(ActionEvent event) {
-        if (validateInputs()) {
-            boolean success = tourDetailsViewModel.saveTour();
-            if (!success) {
-                showErrorMessage("Failed to save tour");
-            }
+        boolean success = tourDetailsViewModel.saveTour();
+        if (!success && !tourDetailsViewModel.isValidInput()) {
+            showValidationDialog();
+        } else if (!success) {
+            showErrorMessage("Failed to save tour due to an unexpected error.");
         }
     }
 
@@ -95,9 +83,17 @@ public class TourDetailsController {
         tourDetailsViewModel.resetToOriginal();
     }
 
+    private void showValidationDialog() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Validation Errors");
+        alert.setHeaderText("Please fix the following issues:");
+        alert.setContentText(tourDetailsViewModel.getValidationErrors());
+        alert.showAndWait();
+    }
+
     private void showErrorMessage(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Validation Error");
+        alert.setTitle("Error");
         alert.setHeaderText("Cannot save tour");
         alert.setContentText(message);
         alert.showAndWait();

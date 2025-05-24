@@ -50,6 +50,9 @@ public class TourLogDetailsController {
     @FXML
     private Button cancelButton;
 
+    @FXML
+    private Label validationLabel;
+
     private final TourLogDetailsViewModel viewModel;
 
     public TourLogDetailsController(TourLogDetailsViewModel viewModel) {
@@ -58,6 +61,13 @@ public class TourLogDetailsController {
 
     @FXML
     void initialize() {
+        setupDatePicker();
+        setupDataBinding();
+        setupValidationBinding();
+        setupTooltips();
+    }
+
+    private void setupDatePicker() {
         dateField.setConverter(new StringConverter<LocalDate>() {
             private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
@@ -79,16 +89,14 @@ public class TourLogDetailsController {
                 }
             }
         });
+    }
 
-        dateField.setTooltip(new Tooltip("Select the date of the tour"));
-        difficultyField.setTooltip(new Tooltip("Select the difficulty level"));
-        distanceField.setTooltip(new Tooltip("Enter the total distance in km"));
-        timeField.setTooltip(new Tooltip("Enter the total time in minutes"));
-
+    private void setupDataBinding() {
         dateField.valueProperty().bindBidirectional(viewModel.dateProperty());
         difficultyField.valueProperty().bindBidirectional(viewModel.difficultyProperty());
         distanceField.textProperty().bindBidirectional(viewModel.distanceStringProperty());
         timeField.textProperty().bindBidirectional(viewModel.timeStringProperty());
+        commentField.textProperty().bindBidirectional(viewModel.commentProperty());
 
         viewModel.ratingProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
@@ -106,73 +114,35 @@ public class TourLogDetailsController {
                 viewModel.setRating(Integer.parseInt(newVal.getUserData().toString()));
             }
         });
-
-        commentField.textProperty().bindBidirectional(viewModel.commentProperty());
     }
 
-    private boolean validateInputs() {
-        boolean isValid = true;
-        StringBuilder errorMessage = new StringBuilder("Please fix the following errors:\n");
+    private void setupValidationBinding() {
+        saveButton.disableProperty().bind(viewModel.isValidInputProperty().not());
 
-        if (dateField.getValue() == null) {
-            errorMessage.append("- Date is required\n");
-            isValid = false;
-        } else if (dateField.getValue().isAfter(LocalDate.now())) {
-            errorMessage.append("- Date cannot be in the future\n");
-            isValid = false;
+        if (validationLabel != null) {
+            validationLabel.textProperty().bind(viewModel.validationErrorsProperty());
+            validationLabel.visibleProperty().bind(viewModel.isValidInputProperty().not());
+            validationLabel.setStyle("-fx-text-fill: red; -fx-font-size: 11px;");
         }
-
-        if (difficultyField.getValue() == null || difficultyField.getValue().trim().isEmpty()) {
-            errorMessage.append("- Difficulty is required\n");
-            isValid = false;
-        }
-
-        try {
-            if (distanceField.getText() == null || distanceField.getText().trim().isEmpty()) {
-                errorMessage.append("- Distance is required\n");
-                isValid = false;
-            } else {
-                double distance = Double.parseDouble(distanceField.getText());
-                if (distance < 0) {
-                    errorMessage.append("- Distance cannot be negative\n");
-                    isValid = false;
-                }
-            }
-        } catch (NumberFormatException e) {
-            errorMessage.append("- Distance must be a valid number\n");
-            isValid = false;
-        }
-
-        try {
-            if (timeField.getText() == null || timeField.getText().trim().isEmpty()) {
-                errorMessage.append("- Time is required\n");
-                isValid = false;
-            } else {
-                int time = Integer.parseInt(timeField.getText());
-                if (time < 0) {
-                    errorMessage.append("- Time cannot be negative\n");
-                    isValid = false;
-                }
-            }
-        } catch (NumberFormatException e) {
-            errorMessage.append("- Time must be a valid number\n");
-            isValid = false;
-        }
-
-        if (!isValid) {
-            showErrorMessage(errorMessage.toString());
-        }
-
-        return isValid;
     }
+
+    private void setupTooltips() {
+        dateField.setTooltip(new Tooltip("Select the date of the tour (cannot be in the future)"));
+        difficultyField.setTooltip(new Tooltip("Select the difficulty level"));
+        distanceField.setTooltip(new Tooltip("Enter the total distance in km (0-10,000)"));
+        timeField.setTooltip(new Tooltip("Enter the total time in minutes (0-10,080)"));
+        commentField.setTooltip(new Tooltip("Enter a comment (max 1000 characters)"));
+    }
+
 
     @FXML
     void onSaveClicked(ActionEvent event) {
-        if (validateInputs()) {
-            if (viewModel.saveTourLog()) {
-            } else {
-                showErrorMessage("Cannot save tour log: " + viewModel.getValidationErrors());
-            }
+        boolean success = viewModel.saveTourLog();
+        if (!success && !viewModel.isValidInput()) {
+            // Show validation errors in a dialog if not already visible
+            showValidationDialog();
+        } else if (!success) {
+            showErrorMessage("Cannot save tour log due to an unexpected error.");
         }
     }
 
@@ -181,9 +151,17 @@ public class TourLogDetailsController {
         viewModel.closeDetails();
     }
 
+    private void showValidationDialog() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Validation Errors");
+        alert.setHeaderText("Please fix the following issues:");
+        alert.setContentText(viewModel.getValidationErrors());
+        alert.showAndWait();
+    }
+
     private void showErrorMessage(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Validation Error");
+        alert.setTitle("Error");
         alert.setHeaderText("Cannot save tour log");
         alert.setContentText(message);
         alert.showAndWait();

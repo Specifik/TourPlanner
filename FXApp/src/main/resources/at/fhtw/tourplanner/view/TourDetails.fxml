@@ -25,6 +25,7 @@
                 <RowConstraints minHeight="30" />
                 <RowConstraints minHeight="30" />
                 <RowConstraints minHeight="80" vgrow="ALWAYS" />
+                <RowConstraints minHeight="50" />
                 <RowConstraints minHeight="40" />
             </rowConstraints>
 
@@ -54,7 +55,12 @@
             <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.valignment="TOP" />
             <TextArea fx:id="descriptionTextArea" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.rowSpan="2" wrapText="true" />
 
-            <HBox spacing="10" alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="5">
+            <!-- Validation Label -->
+            <Label fx:id="validationLabel" GridPane.columnIndex="1" GridPane.rowIndex="5"
+                   wrapText="true" style="-fx-text-fill: red; -fx-font-size: 11px;" />
+
+            <!-- Action Buttons -->
+            <HBox spacing="10" alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="6">
                 <Button fx:id="saveTourButton" text="Save" onAction="#onSaveTourClicked" defaultButton="true" />
                 <Button fx:id="cancelButton" text="Cancel" onAction="#onCancelClicked" />
             </HBox>

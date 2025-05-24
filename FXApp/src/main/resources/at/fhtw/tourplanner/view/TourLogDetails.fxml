@@ -25,6 +25,7 @@
             <RowConstraints minHeight="30" />
             <RowConstraints minHeight="30" />
             <RowConstraints vgrow="ALWAYS" minHeight="100" />
+            <RowConstraints minHeight="50" />
             <RowConstraints minHeight="40" />
         </rowConstraints>
 
@@ -74,8 +75,12 @@
         </Label>
         <TextArea fx:id="commentField" GridPane.columnIndex="1" GridPane.rowIndex="5" wrapText="true" />
 
+        <!-- Validation Label -->
+        <Label fx:id="validationLabel" GridPane.columnIndex="1" GridPane.rowIndex="6"
+               wrapText="true" style="-fx-text-fill: red; -fx-font-size: 11px;" />
+
         <!-- Action Buttons -->
-        <HBox spacing="10" alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="6">
+        <HBox spacing="10" alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="7">
             <Button fx:id="saveButton" text="Save" onAction="#onSaveClicked" defaultButton="true" />
             <Button fx:id="cancelButton" text="Cancel" onAction="#onCancelClicked" />
         </HBox>

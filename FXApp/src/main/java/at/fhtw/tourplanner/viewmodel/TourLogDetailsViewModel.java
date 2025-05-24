@@ -15,6 +15,7 @@ public class TourLogDetailsViewModel {
     private TourLog tourLog;
     private boolean isNewLog;
     private boolean autoCloseOnSave = true;
+    private volatile boolean isInitValue = false;
 
     private final ObjectProperty<LocalDate> date = new SimpleObjectProperty<>();
     private final StringProperty difficulty = new SimpleStringProperty();
@@ -22,6 +23,9 @@ public class TourLogDetailsViewModel {
     private final StringProperty timeString = new SimpleStringProperty();
     private final IntegerProperty rating = new SimpleIntegerProperty();
     private final StringProperty comment = new SimpleStringProperty();
+
+    private final BooleanProperty isValidInput = new SimpleBooleanProperty(false);
+    private final StringProperty validationErrors = new SimpleStringProperty("");
 
     public interface CloseListener {
         void onClose();
@@ -35,6 +39,92 @@ public class TourLogDetailsViewModel {
     private final List<LogUpdatedListener> logUpdatedListeners = new ArrayList<>();
 
     public TourLogDetailsViewModel() {
+        // listeners for validation
+        date.addListener((obs, oldVal, newVal) -> validateInput());
+        difficulty.addListener((obs, oldVal, newVal) -> validateInput());
+        distanceString.addListener((obs, oldVal, newVal) -> validateInput());
+        timeString.addListener((obs, oldVal, newVal) -> validateInput());
+        rating.addListener((obs, oldVal, newVal) -> validateInput());
+        comment.addListener((obs, oldVal, newVal) -> validateInput());
+    }
+
+    private void validateInput() {
+        if (isInitValue) {
+            return;
+        }
+
+        StringBuilder errorMessage = new StringBuilder();
+        boolean isValid = true;
+
+        // validate date
+        if (date.get() == null) {
+            errorMessage.append("• Date is required\n");
+            isValid = false;
+        } else if (date.get().isAfter(LocalDate.now())) {
+            errorMessage.append("• Date cannot be in the future\n");
+            isValid = false;
+        }
+
+        // validate difficulty
+        if (difficulty.get() == null || difficulty.get().trim().isEmpty()) {
+            errorMessage.append("• Difficulty is required\n");
+            isValid = false;
+        }
+
+        // validate distance
+        if (distanceString.get() == null || distanceString.get().trim().isEmpty()) {
+            errorMessage.append("• Distance is required\n");
+            isValid = false;
+        } else {
+            try {
+                double distance = Double.parseDouble(distanceString.get().trim());
+                if (distance < 0) {
+                    errorMessage.append("• Distance cannot be negative\n");
+                    isValid = false;
+                } else if (distance > 10000) {
+                    errorMessage.append("• Distance cannot exceed 10,000 km\n");
+                    isValid = false;
+                }
+            } catch (NumberFormatException e) {
+                errorMessage.append("• Distance must be a valid number\n");
+                isValid = false;
+            }
+        }
+
+        // validate time
+        if (timeString.get() == null || timeString.get().trim().isEmpty()) {
+            errorMessage.append("• Time is required\n");
+            isValid = false;
+        } else {
+            try {
+                int time = Integer.parseInt(timeString.get().trim());
+                if (time < 0) {
+                    errorMessage.append("• Time cannot be negative\n");
+                    isValid = false;
+                } else if (time > 10080) { // More than a week in minutes
+                    errorMessage.append("• Time cannot exceed 10,080 minutes (1 week)\n");
+                    isValid = false;
+                }
+            } catch (NumberFormatException e) {
+                errorMessage.append("• Time must be a valid number\n");
+                isValid = false;
+            }
+        }
+
+        // validate rating
+        if (rating.get() < 1 || rating.get() > 5) {
+            errorMessage.append("• Rating must be between 1 and 5\n");
+            isValid = false;
+        }
+
+        // validate comment length
+        if (comment.get() != null && comment.get().length() > 1000) {
+            errorMessage.append("• Comment cannot exceed 1000 characters\n");
+            isValid = false;
+        }
+
+        isValidInput.set(isValid);
+        validationErrors.set(errorMessage.toString());
     }
 
     public void setAutoCloseOnSave(boolean autoCloseOnSave) {
@@ -42,6 +132,7 @@ public class TourLogDetailsViewModel {
     }
 
     public void setTourLog(TourLog tourLog, boolean isNewLog) {
+        isInitValue = true;
         this.tourLog = tourLog;
         this.isNewLog = isNewLog;
 
@@ -55,6 +146,9 @@ public class TourLogDetailsViewModel {
         } else {
             clearFields();
         }
+
+        isInitValue = false;
+        validateInput();
     }
 
     private void clearFields() {
@@ -62,35 +156,26 @@ public class TourLogDetailsViewModel {
         difficulty.set("");
         distanceString.set("0.0");
         timeString.set("0");
-        rating.set(3); // Default rating
+        rating.set(3); // default rating
         comment.set("");
     }
 
     public boolean saveTourLog() {
-        if (!validateInput()) {
+        validateInput();
+
+        if (!isValidInput.get() || tourLog == null) {
             return false;
         }
 
-        if (tourLog != null) {
+        try {
             int logId = tourLog.getId();
             int tourId = tourLog.getTourId();
 
             LocalDateTime dateTime = LocalDateTime.of(date.get(), LocalTime.now());
             tourLog.setDateTime(dateTime);
-            tourLog.setDifficulty(difficulty.get());
-
-            try {
-                tourLog.setTotalDistance(Double.parseDouble(distanceString.get()));
-            } catch (NumberFormatException e) {
-                tourLog.setTotalDistance(0.0);
-            }
-
-            try {
-                tourLog.setTotalTime(Integer.parseInt(timeString.get()));
-            } catch (NumberFormatException e) {
-                tourLog.setTotalTime(0);
-            }
-
+            tourLog.setDifficulty(difficulty.get().trim());
+            tourLog.setTotalDistance(Double.parseDouble(distanceString.get().trim()));
+            tourLog.setTotalTime(Integer.parseInt(timeString.get().trim()));
             tourLog.setRating(rating.get());
             tourLog.setComment(comment.get());
 
@@ -114,52 +199,10 @@ public class TourLogDetailsViewModel {
             }
 
             return true;
-        }
-
-        return false;
-    }
-
-    public boolean validateInput() {
-        // Basic validation checks
-        if (date.get() == null) {
-            validationErrors = "Date is required";
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
-
-        if (difficulty.get() == null || difficulty.get().isEmpty()) {
-            validationErrors = "Difficulty is required";
-            return false;
-        }
-
-        try {
-            double distance = Double.parseDouble(distanceString.get());
-            if (distance < 0) {
-                validationErrors = "Distance cannot be negative";
-                return false;
-            }
-        } catch (NumberFormatException e) {
-            validationErrors = "Distance must be a valid number";
-            return false;
-        }
-
-        try {
-            int time = Integer.parseInt(timeString.get());
-            if (time < 0) {
-                validationErrors = "Time cannot be negative";
-                return false;
-            }
-        } catch (NumberFormatException e) {
-            validationErrors = "Time must be a valid number";
-            return false;
-        }
-
-        return true;
-    }
-
-    private String validationErrors = "";
-
-    public String getValidationErrors() {
-        return validationErrors;
     }
 
     public void closeDetails() {
@@ -168,20 +211,20 @@ public class TourLogDetailsViewModel {
         }
     }
 
-    public void addCloseListener(CloseListener listener) {
-        closeListeners.add(listener);
+    public boolean isValidInput() {
+        return isValidInput.get();
     }
 
-    public void removeCloseListener(CloseListener listener) {
-        closeListeners.remove(listener);
+    public BooleanProperty isValidInputProperty() {
+        return isValidInput;
     }
 
-    public void addLogUpdatedListener(LogUpdatedListener listener) {
-        logUpdatedListeners.add(listener);
+    public String getValidationErrors() {
+        return validationErrors.get();
     }
 
-    public void removeLogUpdatedListener(LogUpdatedListener listener) {
-        logUpdatedListeners.remove(listener);
+    public StringProperty validationErrorsProperty() {
+        return validationErrors;
     }
 
     public ObjectProperty<LocalDate> dateProperty() {
@@ -210,5 +253,21 @@ public class TourLogDetailsViewModel {
 
     public void setRating(int rating) {
         this.rating.set(rating);
+    }
+
+    public void addCloseListener(CloseListener listener) {
+        closeListeners.add(listener);
+    }
+
+    public void removeCloseListener(CloseListener listener) {
+        closeListeners.remove(listener);
+    }
+
+    public void addLogUpdatedListener(LogUpdatedListener listener) {
+        logUpdatedListeners.add(listener);
+    }
+
+    public void removeLogUpdatedListener(LogUpdatedListener listener) {
+        logUpdatedListeners.remove(listener);
     }
 }
