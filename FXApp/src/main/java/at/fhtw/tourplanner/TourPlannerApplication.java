@@ -16,7 +16,7 @@ public class TourPlannerApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLDependencyInjection.load("MainWindow.fxml", Locale.GERMAN );  // Locale.GERMANY, Locale.ENGLISH
+        Parent root = FXMLDependencyInjection.load("MainWindow.fxml", Locale.GERMAN );
 
         Scene scene = new Scene(root);
 

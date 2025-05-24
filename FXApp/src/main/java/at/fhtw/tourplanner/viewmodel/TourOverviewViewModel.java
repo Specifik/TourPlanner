@@ -1,5 +1,6 @@
 package at.fhtw.tourplanner.viewmodel;
 
+import at.fhtw.tourplanner.bl.BL;
 import at.fhtw.tourplanner.dal.DAL;
 import at.fhtw.tourplanner.model.Tour;
 import javafx.beans.property.ObjectProperty;
@@ -72,7 +73,7 @@ public class TourOverviewViewModel {
     }
 
     public void refreshTours() {
-        List<Tour> tours = DAL.getInstance().tourDao().getAll();
+        List<Tour> tours = BL.getInstance().getAllTours();
         setTours(tours);
     }
 
@@ -89,7 +90,7 @@ public class TourOverviewViewModel {
     }
 
     public Tour addNewTour() {
-        Tour newTour = DAL.getInstance().tourDao().create();
+        Tour newTour = BL.getInstance().createTour();
         refreshTours();
         for (Tour tour : observableTours) {
             if (tour.getId() == newTour.getId()) {
