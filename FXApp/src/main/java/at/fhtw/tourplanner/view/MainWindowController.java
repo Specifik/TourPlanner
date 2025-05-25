@@ -13,6 +13,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import at.fhtw.tourplanner.bl.MapService;
+import javafx.scene.web.WebView;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
@@ -24,6 +26,9 @@ public class MainWindowController {
     @FXML private TourDetailsController tourDetailsController;
     @FXML private TourLogsController tourLogsController;
     @FXML private TabPane detailsTabPane;
+
+    @FXML private WebView mapWebView;
+    private MapService mapService = new MapService();
 
     private final MainWindowViewModel mainWindowViewModel;
     private Tab tourLogTab = null;
@@ -70,6 +75,29 @@ public class MainWindowController {
             tourDetailsController.getTourDetailsViewModel().addTourUpdatedListener(
                     this::handleTourUpdated
             );
+        }
+
+        if (mapWebView != null) {
+            mapService.showNoRouteMessage(mapWebView);
+        }
+
+        if (tourOverviewController != null) {
+            tourOverviewController.getTourOverviewViewModel().addSelectionChangedListener(selectedTour -> {
+                if (tourDetailsTab != null) {
+                    detailsTabPane.getSelectionModel().select(tourDetailsTab);
+                }
+
+                tourLogsController.getTourLogsViewModel().setCurrentTour(selectedTour);
+
+                // Display map for selected tour
+                if (selectedTour != null && mapWebView != null) {
+                    if (selectedTour.getRouteGeoJson() != null && !selectedTour.getRouteGeoJson().trim().isEmpty()) {
+                        mapService.displayTourMap(mapWebView, selectedTour.getRouteGeoJson(), selectedTour.getName());
+                    } else {
+                        mapService.showNoRouteMessage(mapWebView);
+                    }
+                }
+            });
         }
     }
 
