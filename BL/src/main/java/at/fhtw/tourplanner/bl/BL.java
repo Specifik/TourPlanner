@@ -1,8 +1,8 @@
 package at.fhtw.tourplanner.bl;
 
 import at.fhtw.tourplanner.dal.DAL;
+import at.fhtw.tourplanner.dal.TourDao;
 import at.fhtw.tourplanner.model.Tour;
-import at.fhtw.tourplanner.model.TourLog;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -51,118 +51,41 @@ public class BL {
     public List<Tour> findMatchingTours(String searchText, String searchScope) {
         System.out.println("Searching with scope: " + searchScope + ", text: " + searchText);
 
-        List<Tour> allTours = getAllTours(); // Uses TourService now
-
         if (searchText == null || searchText.trim().isEmpty()) {
-            return allTours;
+            return getAllTours();
         }
 
-        String lowerCaseSearchText = searchText.toLowerCase();
+        String trimmedSearchText = searchText.trim();
 
-        if ("All".equals(searchScope) || "Tours Only".equals(searchScope)) {
-            List<Tour> matchingTours = allTours.stream()
-                    .filter(tour -> matchesTour(tour, lowerCaseSearchText))
-                    .collect(Collectors.toList());
+        // Use the enhanced DAO search methods
+        TourDao tourDao = (TourDao) DAL.getInstance().tourDao();
 
-            if ("All".equals(searchScope)) {
-                Set<Integer> tourIdsWithMatchingLogs = findToursWithMatchingLogs(lowerCaseSearchText);
+        if ("All".equals(searchScope)) {
+            // Search in tours
+            List<Tour> tourMatches = tourDao.findBySearchText(trimmedSearchText);
 
-                for (Tour tour : allTours) {
-                    if (tourIdsWithMatchingLogs.contains(tour.getId()) &&
-                            !matchingTours.contains(tour)) {
-                        matchingTours.add(tour);
-                    }
-                }
-            }
+            // Search in tour logs and get associated tours
+            List<Tour> logMatches = tourDao.findByTourLogSearchText(trimmedSearchText);
 
-            return matchingTours;
-        }
+            // Combine results and remove duplicates
+            Set<Tour> combinedResults = new HashSet<>(tourMatches);
+            combinedResults.addAll(logMatches);
 
-        if ("Logs Only".equals(searchScope)) {
-            Set<Integer> matchingTourIds = findToursWithMatchingLogs(lowerCaseSearchText);
-            System.out.println("Found matching tour IDs in logs: " + matchingTourIds);
+            return new ArrayList<>(combinedResults);
 
-            if (matchingTourIds.isEmpty()) {
-                return new ArrayList<>();
-            }
+        } else if ("Tours Only".equals(searchScope)) {
+            return tourDao.findBySearchText(trimmedSearchText);
 
-            return allTours.stream()
-                    .filter(tour -> matchingTourIds.contains(tour.getId()))
-                    .collect(Collectors.toList());
+        } else if ("Logs Only".equals(searchScope)) {
+            return tourDao.findByTourLogSearchText(trimmedSearchText);
         }
 
         return new ArrayList<>();
     }
 
-    private boolean matchesTour(Tour tour, String searchText) {
-        if (tour.getName() != null && tour.getName().toLowerCase().contains(searchText)) {
-            return true;
-        }
-
-        if (tour.getFrom() != null && tour.getFrom().toLowerCase().contains(searchText)) {
-            return true;
-        }
-
-        if (tour.getTo() != null && tour.getTo().toLowerCase().contains(searchText)) {
-            return true;
-        }
-
-        if (tour.getTransportType() != null && tour.getTransportType().toLowerCase().contains(searchText)) {
-            return true;
-        }
-
-        if (tour.getDescription() != null && tour.getDescription().toLowerCase().contains(searchText)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private Set<Integer> findToursWithMatchingLogs(String searchText) {
-        Set<Integer> matchingTourIds = new HashSet<>();
-
-        List<TourLog> allLogs = DAL.getInstance().tourLogDao().getAll();
-        System.out.println("Total logs to search: " + allLogs.size());
-
-        for (TourLog log : allLogs) {
-            if (matchesLog(log, searchText)) {
-                matchingTourIds.add(log.getTourId());
-                System.out.println("Found match in log ID: " + log.getId() + " for tour ID: " + log.getTourId());
-            }
-        }
-
-        return matchingTourIds;
-    }
-
-    private boolean matchesLog(TourLog log, String searchText) {
-        if (log.getComment() != null && log.getComment().toLowerCase().contains(searchText)) {
-            return true;
-        }
-
-        if (log.getDifficulty() != null && log.getDifficulty().toLowerCase().contains(searchText)) {
-            return true;
-        }
-
-        if (log.getDateTime() != null && log.getDateTime().toString().toLowerCase().contains(searchText)) {
-            return true;
-        }
-
-        if (String.valueOf(log.getTotalDistance()).contains(searchText)) {
-            return true;
-        }
-
-        if (String.valueOf(log.getTotalTime()).contains(searchText)) {
-            return true;
-        }
-
-        if (String.valueOf(log.getRating()).contains(searchText)) {
-            return true;
-        }
-
-        return false;
-    }
-
     private static final BL instance = new BL();
 
-    public static BL getInstance() { return instance; }
+    public static BL getInstance() {
+        return instance;
+    }
 }
