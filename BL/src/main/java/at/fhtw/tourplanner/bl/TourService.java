@@ -30,10 +30,12 @@ public class TourService {
         if (existingOpt.isPresent()) {
             Tour existing = existingOpt.get();
 
+            // Check if route-related fields changed
             boolean needsApiUpdate = !Objects.equals(existing.getFrom(), tour.getFrom()) ||
                     !Objects.equals(existing.getTo(), tour.getTo()) ||
                     !Objects.equals(existing.getTransportType(), tour.getTransportType());
 
+            // Update basic tour data
             DAL.getInstance().tourDao().update(tour, Arrays.asList(
                     tour.getId(),
                     tour.getName(),
@@ -43,19 +45,9 @@ public class TourService {
                     tour.getDescription()
             ));
 
-            // update with API data if needed
+            // Update with API data if route changed
             if (needsApiUpdate && !tour.getFrom().isEmpty() && !tour.getTo().isEmpty()) {
                 updateTourWithApiData(tour);
-
-                // Save API data back to database
-                DAL.getInstance().tourDao().update(tour, Arrays.asList(
-                        tour.getId(),
-                        tour.getName(),
-                        tour.getFrom(),
-                        tour.getTo(),
-                        tour.getTransportType(),
-                        tour.getDescription()
-                ));
             }
         }
     }
@@ -64,47 +56,8 @@ public class TourService {
         DAL.getInstance().tourDao().delete(tour);
     }
 
-    private void updateTourWithApiData(Tour tour) {
-        if (tour.getFrom().isEmpty() || tour.getTo().isEmpty()) {
-            System.out.println("Skipping API call - from or to location is empty");
-            return;
-        }
-
-        try {
-            System.out.println("Fetching route data for: " + tour.getFrom() + " -> " + tour.getTo());
-
-            OpenRouteServiceClient.GeocodingResult fromCoords = apiClient.geocodeAddress(tour.getFrom() + ", Austria");
-            OpenRouteServiceClient.GeocodingResult toCoords = apiClient.geocodeAddress(tour.getTo() + ", Austria");
-
-            OpenRouteServiceClient.DirectionsResult directions = apiClient.getDirections(
-                    fromCoords.getLongitude(), fromCoords.getLatitude(),
-                    toCoords.getLongitude(), toCoords.getLatitude(),
-                    tour.getTransportType()
-            );
-
-            tour.setTourDistance(directions.getDistance());
-            tour.setEstimatedTime(directions.getEstimatedTime());
-            tour.setRouteGeoJson(directions.getGeoJson());
-
-            System.out.println("✓ Updated tour with API data: " +
-                    String.format("%.2f km, %d minutes", directions.getDistance(), directions.getEstimatedTime()));
-
-        } catch (Exception e) {
-            System.err.println("Failed to update tour with API data: " + e.getMessage());
-        }
-    }
-
     public void refreshTourApiData(Tour tour) {
         updateTourWithApiData(tour);
-
-        DAL.getInstance().tourDao().update(tour, Arrays.asList(
-                tour.getId(),
-                tour.getName(),
-                tour.getFrom(),
-                tour.getTo(),
-                tour.getTransportType(),
-                tour.getDescription()
-        ));
     }
 
     public void initializeToursWithApiData() {
@@ -116,5 +69,33 @@ public class TourService {
             }
         }
         System.out.println("✓ Tour initialization complete");
+    }
+
+    private void updateTourWithApiData(Tour tour) {
+        if (tour.getFrom().isEmpty() || tour.getTo().isEmpty()) {
+            System.out.println("Skipping API call - from or to location is empty");
+            return;
+        }
+
+        try {
+            System.out.println("Fetching route data for: " + tour.getFrom() + " -> " + tour.getTo());
+
+            OpenRouteServiceClient.RouteResult result = apiClient.getRoute(
+                    tour.getFrom(),
+                    tour.getTo(),
+                    tour.getTransportType()
+            );
+
+            // Update tour with API data
+            tour.setTourDistance(result.getDistance());
+            tour.setEstimatedTime(result.getDuration());
+            tour.setRouteGeoJson(result.getGeoJson());
+
+            System.out.println("✓ Updated tour with API data: " +
+                    String.format("%.2f km, %d minutes", result.getDistance(), result.getDuration()));
+
+        } catch (Exception e) {
+            System.err.println("Failed to update tour with API data: " + e.getMessage());
+        }
     }
 }

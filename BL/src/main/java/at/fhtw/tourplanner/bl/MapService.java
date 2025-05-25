@@ -41,7 +41,7 @@ public class MapService {
                         // 1. Create map
                         var map = L.map('map');
                         
-                        // 2. Add OpenStreetMap tiles (no attribution)
+                        // 2. Add OpenStreetMap tiles
                         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                             attribution: ''
                         }).addTo(map);

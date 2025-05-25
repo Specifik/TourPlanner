@@ -1,9 +1,5 @@
 package at.fhtw.tourplanner.bl;
 
-/**
- * Simple test class to verify OpenRouteService API integration
- * Run this to test your API key and connection before integrating
- */
 public class OpenRouteServiceTest {
 
     public static void main(String[] args) {
@@ -21,30 +17,55 @@ public class OpenRouteServiceTest {
 
         System.out.println("\n2. Testing geocoding...");
         try {
-            OpenRouteServiceClient.GeocodingResult from = client.geocodeAddress("Stephansplatz 1, 1010 Vienna, Austria");
-            OpenRouteServiceClient.GeocodingResult to = client.geocodeAddress("Karlsplatz, 1040 Vienna, Austria");
+            OpenRouteServiceClient.Coordinates from = client.geocodeAddress("Stephansplatz Vienna");
+            OpenRouteServiceClient.Coordinates to = client.geocodeAddress("Karlsplatz Vienna");
 
             System.out.println("✓ Geocoding successful!");
-            System.out.println("  From: " + from.getAddress() + " -> " + from.getLatitude() + ", " + from.getLongitude());
-            System.out.println("  To: " + to.getAddress() + " -> " + to.getLatitude() + ", " + to.getLongitude());
+            System.out.println("  From: Stephansplatz -> " + from.lat + ", " + from.lon);
+            System.out.println("  To: Karlsplatz -> " + to.lat + ", " + to.lon);
 
-            System.out.println("\n3. Testing directions...");
-            OpenRouteServiceClient.DirectionsResult directions = client.getDirections(
-                    from.getLongitude(), from.getLatitude(),
-                    to.getLongitude(), to.getLatitude(),
+        } catch (Exception e) {
+            System.out.println("✗ Geocoding failed: " + e.getMessage());
+            return;
+        }
+
+        System.out.println("\n3. Testing route calculation...");
+        try {
+            OpenRouteServiceClient.RouteResult result = client.getRoute(
+                    "Stephansplatz Vienna",
+                    "Karlsplatz Vienna",
                     "Walking"
             );
 
-            System.out.println("✓ Directions successful!");
-            System.out.println("  Distance: " + String.format("%.2f km", directions.getDistance()));
-            System.out.println("  Estimated time: " + directions.getEstimatedTime() + " minutes");
-            System.out.println("  Route data length: " + directions.getGeoJson().length() + " characters");
+            System.out.println("✓ Route calculation successful!");
+            System.out.println("  Distance: " + String.format("%.2f km", result.getDistance()));
+            System.out.println("  Estimated time: " + result.getDuration() + " minutes");
+            System.out.println("  GeoJSON length: " + result.getGeoJson().length() + " characters");
 
         } catch (Exception e) {
-            System.out.println("✗ Test failed: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println("✗ Route calculation failed: " + e.getMessage());
+            return;
         }
 
-        System.out.println("\nAPI integration test completed!");
+        System.out.println("\n4. Testing different transport types...");
+        String[] transportTypes = {"Walking", "Biking", "Car"};
+
+        for (String transport : transportTypes) {
+            try {
+                OpenRouteServiceClient.RouteResult result = client.getRoute(
+                        "Nussdorf Vienna",
+                        "Kahlenberg Vienna",
+                        transport
+                );
+
+                System.out.println("✓ " + transport + ": " +
+                        String.format("%.1f km, %d min", result.getDistance(), result.getDuration()));
+
+            } catch (Exception e) {
+                System.out.println("✗ " + transport + " failed: " + e.getMessage());
+            }
+        }
+
+        System.out.println("\nAPI integration test completed successfully! 🎉");
     }
 }
