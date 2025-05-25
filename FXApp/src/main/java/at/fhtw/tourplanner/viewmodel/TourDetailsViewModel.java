@@ -1,5 +1,6 @@
 package at.fhtw.tourplanner.viewmodel;
 
+import at.fhtw.tourplanner.bl.BL;
 import at.fhtw.tourplanner.dal.DAL;
 import at.fhtw.tourplanner.model.Tour;
 import javafx.beans.property.BooleanProperty;
@@ -220,14 +221,7 @@ public class TourDetailsViewModel {
             tourModel.setTransportType(transportType.get());
             tourModel.setDescription(description.get());
 
-            DAL.getInstance().tourDao().update(tourModel, Arrays.asList(
-                    tourModel.getId(),
-                    tourModel.getName(),
-                    tourModel.getFrom(),
-                    tourModel.getTo(),
-                    tourModel.getTransportType(),
-                    tourModel.getDescription()
-            ));
+            BL.getInstance().updateTour(tourModel);
 
             originalName = tourModel.getName();
             originalFrom = tourModel.getFrom();

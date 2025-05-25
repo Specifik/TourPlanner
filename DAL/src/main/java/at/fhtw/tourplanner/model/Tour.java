@@ -10,6 +10,12 @@ public class Tour implements Serializable {
     private String transportType;
     private String description;
 
+    // API data
+    private double tourDistance;
+    private int estimatedTime;
+    private String routeImagePath;
+    private String routeGeoJson;
+
     public Tour(int id, String name, String from, String to) {
         this.id = id;
         this.name = name;
@@ -77,8 +83,43 @@ public class Tour implements Serializable {
         this.description = description;
     }
 
+    public double getTourDistance() {
+        return tourDistance;
+    }
+
+    public void setTourDistance(double tourDistance) {
+        this.tourDistance = tourDistance;
+    }
+
+    public int getEstimatedTime() {
+        return estimatedTime;
+    }
+
+    public void setEstimatedTime(int estimatedTime) {
+        this.estimatedTime = estimatedTime;
+    }
+
+    public String getRouteImagePath() {
+        return routeImagePath;
+    }
+
+    public void setRouteImagePath(String routeImagePath) {
+        this.routeImagePath = routeImagePath;
+    }
+
+    public String getRouteGeoJson() {
+        return routeGeoJson;
+    }
+
+    public void setRouteGeoJson(String routeGeoJson) {
+        this.routeGeoJson = routeGeoJson;
+    }
+
     @Override
     public String toString() {
+        if (tourDistance > 0) {
+            return name + String.format(" (%.1f km, %d min)", tourDistance, estimatedTime);
+        }
         return name;
     }
 }

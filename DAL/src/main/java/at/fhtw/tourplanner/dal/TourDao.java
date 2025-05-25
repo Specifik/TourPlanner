@@ -10,11 +10,11 @@ public class TourDao implements Dao<Tour> {
     private int nextId = 1;
 
     public TourDao() {
-        tours.add(new Tour(nextId++, "Wien Innere Stadt", "Schwedenplatz", "Karlsplatz",
+        tours.add(new Tour(nextId++, "Wien Innere Stadt", "Schwedenplatz, Vienna", "Karlsplatz, Vienna",
                 "Walking", "Kurzer Spaziergang durch die Altstadt"));
-        tours.add(new Tour(nextId++, "Donauinsel Radweg", "Donauinsel Nord", "Donauinsel Süd",
+        tours.add(new Tour(nextId++, "Donauinsel Radweg", "Reichsbrücke, Vienna", "Praterbrücke, Vienna",
                 "Biking", "Gemütliche Radtour entlang des Wassers"));
-        tours.add(new Tour(nextId++, "Kahlenberg Wanderung", "Nussdorf", "Kahlenberg",
+        tours.add(new Tour(nextId++, "Kahlenberg Wanderung", "Nussdorf U-Bahn, Vienna", "Kahlenberg, Vienna",
                 "Hiking", "Steiler Weg nach oben, aber tolle Aussicht"));
     }
 

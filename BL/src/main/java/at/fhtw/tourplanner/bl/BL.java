@@ -11,6 +11,39 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class BL {
+
+    private final TourService tourService = new TourService();
+
+    private static boolean initialized = false;
+
+    private void ensureInitialized() {
+        if (!initialized) {
+            tourService.initializeToursWithApiData();
+            initialized = true;
+        }
+    }
+
+    public List<Tour> getAllTours() {
+        ensureInitialized();
+        return tourService.getAllTours();
+    }
+
+    public Tour createTour() {
+        return tourService.createTour();
+    }
+
+    public void updateTour(Tour tour) {
+        tourService.updateTour(tour);
+    }
+
+    public void deleteTour(Tour tour) {
+        tourService.deleteTour(tour);
+    }
+
+    public void refreshTourApiData(Tour tour) {
+        tourService.refreshTourApiData(tour);
+    }
+
     public List<Tour> findMatchingTours(String searchText) {
         return findMatchingTours(searchText, "All");
     }
@@ -18,8 +51,8 @@ public class BL {
     public List<Tour> findMatchingTours(String searchText, String searchScope) {
         System.out.println("Searching with scope: " + searchScope + ", text: " + searchText);
 
-        List<Tour> allTours = DAL.getInstance().tourDao().getAll();
-        
+        List<Tour> allTours = getAllTours(); // Uses TourService now
+
         if (searchText == null || searchText.trim().isEmpty()) {
             return allTours;
         }
@@ -46,7 +79,6 @@ public class BL {
         }
 
         if ("Logs Only".equals(searchScope)) {
-            // Get all tour IDs that have matching logs
             Set<Integer> matchingTourIds = findToursWithMatchingLogs(lowerCaseSearchText);
             System.out.println("Found matching tour IDs in logs: " + matchingTourIds);
 
@@ -54,7 +86,6 @@ public class BL {
                 return new ArrayList<>();
             }
 
-            // Filter tours by matching IDs
             return allTours.stream()
                     .filter(tour -> matchingTourIds.contains(tour.getId()))
                     .collect(Collectors.toList());
@@ -131,9 +162,6 @@ public class BL {
         return false;
     }
 
-    //
-    // Singleton-Pattern for BL with early-binding
-    //
     private static final BL instance = new BL();
 
     public static BL getInstance() { return instance; }

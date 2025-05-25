@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.web.WebView?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="at.fhtw.tourplanner.view.MainWindowController"
@@ -68,14 +69,7 @@
                     GridPane.columnIndex="1" GridPane.rowIndex="1"
                     GridPane.halignment="CENTER" GridPane.valignment="CENTER"
                     maxHeight="Infinity" maxWidth="Infinity">
-            <StackPane>
-                <Pane fx:id="mapView" style="-fx-background-color: #f0f0f0;"
-                      StackPane.alignment="CENTER">
-                </Pane>
-                <Label text="Map Placeholder"
-                       style="-fx-font-size: 16px; -fx-font-weight: bold;"
-                       StackPane.alignment="CENTER"/>
-            </StackPane>
+            <WebView fx:id="mapWebView" prefHeight="300" prefWidth="400"/>
         </TitledPane>
     </GridPane>
 </VBox>
