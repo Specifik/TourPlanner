@@ -3,9 +3,11 @@ package at.fhtw.tourplanner.bl;
 import at.fhtw.tourplanner.dal.DAL;
 import at.fhtw.tourplanner.dal.TourDao;
 import at.fhtw.tourplanner.model.Tour;
+import at.fhtw.tourplanner.model.TourLog;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -19,6 +21,7 @@ public class BL {
     private static boolean initialized = false;
     private static final BL instance = new BL();
     private final ReportService reportService = new ReportService();
+    private final ImportExportService importExportService = new ImportExportService();
 
     private BL() {
         logger.info("Business Logic layer initialized");
@@ -120,5 +123,44 @@ public class BL {
             logger.error("Failed to generate summary report", e);
             throw new RuntimeException("Summary report generation failed", e);
         }
+    }
+
+    public void exportAllTours(String filePath) throws IOException {
+        logger.info("Attempting to export all tours to: {}", filePath);
+        List<Tour> allTours = tourService.getAllToursWithLogs();
+        if (allTours.isEmpty()) {
+            logger.warn("No tours found to export.");
+        }
+        importExportService.exportTours(allTours, filePath);
+        logger.info("Successfully initiated export of {} tours to: {}", allTours.size(), filePath);
+    }
+
+    public void importToursFromFile(String filePath) throws IOException {
+        logger.info("Attempting to import tours from: {}", filePath);
+        List<Tour> importedTours = importExportService.importTours(filePath);
+
+        if (importedTours.isEmpty()) {
+            logger.info("No tours were imported from the file: {}", filePath);
+            return;
+        }
+
+        logger.info("Imported {} tours. Saving them to the database...", importedTours.size());
+        TourDao tourDao = (TourDao) DAL.getInstance().tourDao();
+        at.fhtw.tourplanner.dal.TourLogDao tourLogDao = DAL.getInstance().tourLogDao();
+
+        for (Tour tour : importedTours) {
+            Tour savedTour = tourDao.save(tour);
+            logger.debug("Saved imported tour: {} with new ID: {}", savedTour.getName(), savedTour.getId());
+
+            if (tour.getTourLogs() != null && !tour.getTourLogs().isEmpty()) {
+                logger.debug("Saving {} logs for tour: {}", tour.getTourLogs().size(), savedTour.getName());
+                for (TourLog log : tour.getTourLogs()) {
+                    log.setTour(savedTour);
+                    tourLogDao.save(log);
+                    logger.trace("Saved log for tour {}: {}", savedTour.getName(), log.getComment());
+                }
+            }
+        }
+        logger.info("Successfully imported and saved {} tours from: {}", importedTours.size(), filePath);
     }
 }

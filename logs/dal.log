@@ -1,0 +1,156 @@
+2025-05-26 22:31:34.470 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.DAL - DAL initialized, Spring Context retrieved.
+2025-05-26 22:31:34.475 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - TourDao initialized, TourRepository bean acquired.
+2025-05-26 22:31:34.476 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - TourLogDao initialized, TourLogRepository and TourRepository beans acquired.
+2025-05-26 22:31:34.476 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.DAL - TourDao and TourLogDao instantiated.
+2025-05-26 22:31:34.476 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to retrieve all tours.
+2025-05-26 22:31:34.524 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Retrieved 6 tours.
+2025-05-26 22:31:34.524 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to retrieve all tours.
+2025-05-26 22:31:34.527 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Retrieved 6 tours.
+2025-05-26 22:31:41.162 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 7
+2025-05-26 22:31:41.204 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 1 tour logs for tourId: 7.
+2025-05-26 22:32:40.643 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.DAL - DAL initialized, Spring Context retrieved.
+2025-05-26 22:32:40.648 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - TourDao initialized, TourRepository bean acquired.
+2025-05-26 22:32:40.650 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - TourLogDao initialized, TourLogRepository and TourRepository beans acquired.
+2025-05-26 22:32:40.650 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.DAL - TourDao and TourLogDao instantiated.
+2025-05-26 22:32:40.650 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to retrieve all tours.
+2025-05-26 22:32:40.699 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Retrieved 6 tours.
+2025-05-26 22:32:40.699 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to retrieve all tours.
+2025-05-26 22:32:40.702 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Retrieved 6 tours.
+2025-05-26 22:32:53.175 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to retrieve all tours.
+2025-05-26 22:32:53.178 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Retrieved 6 tours.
+2025-05-26 22:33:21.015 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 5
+2025-05-26 22:33:21.048 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 1 tour logs for tourId: 5.
+2025-05-26 22:33:26.968 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to retrieve all tours.
+2025-05-26 22:33:26.971 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Retrieved 6 tours.
+2025-05-26 22:33:53.910 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.DAL - DAL initialized, Spring Context retrieved.
+2025-05-26 22:33:53.913 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - TourDao initialized, TourRepository bean acquired.
+2025-05-26 22:33:53.914 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - TourLogDao initialized, TourLogRepository and TourRepository beans acquired.
+2025-05-26 22:33:53.914 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.DAL - TourDao and TourLogDao instantiated.
+2025-05-26 22:33:53.914 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to retrieve all tours.
+2025-05-26 22:33:53.958 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Retrieved 6 tours.
+2025-05-26 22:33:53.959 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to retrieve all tours.
+2025-05-26 22:33:53.961 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Retrieved 6 tours.
+2025-05-26 22:34:13.218 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to retrieve all tours.
+2025-05-26 22:34:13.221 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Retrieved 6 tours.
+2025-05-26 22:38:16.076 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.DAL - DAL initialized, Spring Context retrieved.
+2025-05-26 22:38:16.080 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - TourDao initialized, TourRepository bean acquired.
+2025-05-26 22:38:16.081 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - TourLogDao initialized, TourLogRepository and TourRepository beans acquired.
+2025-05-26 22:38:16.081 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.DAL - TourDao and TourLogDao instantiated.
+2025-05-26 22:38:16.081 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to retrieve all tours.
+2025-05-26 22:38:16.132 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Retrieved 6 tours.
+2025-05-26 22:38:16.132 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to retrieve all tours.
+2025-05-26 22:38:16.135 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Retrieved 6 tours.
+2025-05-26 22:38:18.964 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 1
+2025-05-26 22:38:18.997 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 2 tour logs for tourId: 1.
+2025-05-26 22:38:29.107 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to retrieve all tours with their logs.
+2025-05-26 22:38:29.117 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Retrieved 6 tours with logs.
+2025-05-26 22:41:05.270 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to delete tour with id: 1
+2025-05-26 22:41:05.300 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Successfully deleted tour with id: 1
+2025-05-26 22:41:05.300 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to retrieve all tours.
+2025-05-26 22:41:05.302 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Retrieved 5 tours.
+2025-05-26 22:41:05.308 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 2
+2025-05-26 22:41:05.309 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 1 tour logs for tourId: 2.
+2025-05-26 22:41:07.247 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to delete tour with id: 2
+2025-05-26 22:41:07.251 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Successfully deleted tour with id: 2
+2025-05-26 22:41:07.251 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to retrieve all tours.
+2025-05-26 22:41:07.253 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Retrieved 4 tours.
+2025-05-26 22:41:07.255 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 3
+2025-05-26 22:41:07.256 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 1 tour logs for tourId: 3.
+2025-05-26 22:41:10.604 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 7
+2025-05-26 22:41:10.607 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 1 tour logs for tourId: 7.
+2025-05-26 22:41:10.909 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 3
+2025-05-26 22:41:10.912 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 1 tour logs for tourId: 3.
+2025-05-26 22:41:12.153 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to delete tour with id: 3
+2025-05-26 22:41:12.158 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Successfully deleted tour with id: 3
+2025-05-26 22:41:12.158 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to retrieve all tours.
+2025-05-26 22:41:12.159 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Retrieved 3 tours.
+2025-05-26 22:41:12.161 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 5
+2025-05-26 22:41:12.163 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 1 tour logs for tourId: 5.
+2025-05-26 22:41:14.361 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to delete tour with id: 5
+2025-05-26 22:41:14.365 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Successfully deleted tour with id: 5
+2025-05-26 22:41:14.365 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to retrieve all tours.
+2025-05-26 22:41:14.367 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Retrieved 2 tours.
+2025-05-26 22:41:14.368 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 6
+2025-05-26 22:41:14.369 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 0 tour logs for tourId: 6.
+2025-05-26 22:41:15.693 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to delete tour with id: 6
+2025-05-26 22:41:15.696 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Successfully deleted tour with id: 6
+2025-05-26 22:41:15.696 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to retrieve all tours.
+2025-05-26 22:41:15.699 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Retrieved 1 tours.
+2025-05-26 22:41:15.700 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 7
+2025-05-26 22:41:15.702 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 1 tour logs for tourId: 7.
+2025-05-26 22:41:17.947 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to delete tour with id: 7
+2025-05-26 22:41:17.951 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Successfully deleted tour with id: 7
+2025-05-26 22:41:17.951 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to retrieve all tours.
+2025-05-26 22:41:17.951 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Retrieved 0 tours.
+2025-05-26 22:41:20.704 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to retrieve all tours.
+2025-05-26 22:41:20.706 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Retrieved 0 tours.
+2025-05-26 22:41:23.067 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to create a new tour.
+2025-05-26 22:41:23.115 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Successfully created new tour with id: 8
+2025-05-26 22:41:23.115 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to retrieve all tours.
+2025-05-26 22:41:23.117 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Retrieved 1 tours.
+2025-05-26 22:41:23.119 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 8
+2025-05-26 22:41:23.121 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 0 tour logs for tourId: 8.
+2025-05-26 22:41:31.630 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to save tour: Wien Innere Stadt
+2025-05-26 22:41:31.634 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Successfully saved tour: Wien Innere Stadt with id: 9
+2025-05-26 22:41:31.634 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to save tour log for tour: Wien Innere Stadt
+2025-05-26 22:41:31.637 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Successfully saved tour log with id: 7 for tour id: 9
+2025-05-26 22:41:31.637 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to save tour log for tour: Wien Innere Stadt
+2025-05-26 22:41:31.638 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Successfully saved tour log with id: 8 for tour id: 9
+2025-05-26 22:41:31.638 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to save tour: New Tour 5
+2025-05-26 22:41:31.640 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Successfully saved tour: New Tour 5 with id: 10
+2025-05-26 22:41:31.640 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to save tour: New Tour 6
+2025-05-26 22:41:31.643 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Successfully saved tour: New Tour 6 with id: 11
+2025-05-26 22:41:31.643 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to save tour log for tour: New Tour 6
+2025-05-26 22:41:31.644 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Successfully saved tour log with id: 9 for tour id: 11
+2025-05-26 22:41:31.644 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to save tour: New Tour 4
+2025-05-26 22:41:31.646 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Successfully saved tour: New Tour 4 with id: 12
+2025-05-26 22:41:31.646 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to save tour log for tour: New Tour 4
+2025-05-26 22:41:31.647 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Successfully saved tour log with id: 10 for tour id: 12
+2025-05-26 22:41:31.647 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to save tour: Kahlenberg Wanderung
+2025-05-26 22:41:31.648 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Successfully saved tour: Kahlenberg Wanderung with id: 13
+2025-05-26 22:41:31.648 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to save tour log for tour: Kahlenberg Wanderung
+2025-05-26 22:41:31.649 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Successfully saved tour log with id: 11 for tour id: 13
+2025-05-26 22:41:31.649 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to save tour: Donauinsel Radweg
+2025-05-26 22:41:31.652 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Successfully saved tour: Donauinsel Radweg with id: 14
+2025-05-26 22:41:31.652 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to save tour log for tour: Donauinsel Radweg
+2025-05-26 22:41:31.652 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Successfully saved tour log with id: 12 for tour id: 14
+2025-05-26 22:41:31.652 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to retrieve all tours.
+2025-05-26 22:41:31.654 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Retrieved 7 tours.
+2025-05-26 22:41:31.671 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 8
+2025-05-26 22:41:31.672 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 0 tour logs for tourId: 8.
+2025-05-26 22:41:36.398 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to delete tour with id: 8
+2025-05-26 22:41:36.401 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Successfully deleted tour with id: 8
+2025-05-26 22:41:36.402 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourDao - Attempting to retrieve all tours.
+2025-05-26 22:41:36.404 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourDao - Retrieved 6 tours.
+2025-05-26 22:41:36.405 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 13
+2025-05-26 22:41:36.408 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 1 tour logs for tourId: 13.
+2025-05-26 22:41:37.711 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 14
+2025-05-26 22:41:37.713 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 1 tour logs for tourId: 14.
+2025-05-26 22:41:38.276 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 9
+2025-05-26 22:41:38.278 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 2 tour logs for tourId: 9.
+2025-05-26 22:41:38.844 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 11
+2025-05-26 22:41:38.847 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 1 tour logs for tourId: 11.
+2025-05-26 22:41:39.713 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 12
+2025-05-26 22:41:39.716 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 1 tour logs for tourId: 12.
+2025-05-26 22:41:40.551 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 11
+2025-05-26 22:41:40.553 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 1 tour logs for tourId: 11.
+2025-05-26 22:41:40.918 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 9
+2025-05-26 22:41:40.920 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 2 tour logs for tourId: 9.
+2025-05-26 22:41:41.242 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 14
+2025-05-26 22:41:41.244 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 1 tour logs for tourId: 14.
+2025-05-26 22:41:41.686 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 13
+2025-05-26 22:41:41.687 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 1 tour logs for tourId: 13.
+2025-05-26 22:41:42.472 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 9
+2025-05-26 22:41:42.476 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 2 tour logs for tourId: 9.
+2025-05-26 22:41:42.811 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 14
+2025-05-26 22:41:42.813 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 1 tour logs for tourId: 14.
+2025-05-26 22:41:43.082 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 10
+2025-05-26 22:41:43.084 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 0 tour logs for tourId: 10.
+2025-05-26 22:41:43.361 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 11
+2025-05-26 22:41:43.362 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 1 tour logs for tourId: 11.
+2025-05-26 22:41:43.892 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 12
+2025-05-26 22:41:43.894 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 1 tour logs for tourId: 12.
+2025-05-26 22:41:57.637 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 11
+2025-05-26 22:41:57.638 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 1 tour logs for tourId: 11.
+2025-05-26 22:41:58.004 [JavaFX Application Thread] DEBUG at.fhtw.tourplanner.dal.TourLogDao - Attempting to retrieve tour logs for tourId: 9
+2025-05-26 22:41:58.005 [JavaFX Application Thread] INFO  at.fhtw.tourplanner.dal.TourLogDao - Retrieved 2 tour logs for tourId: 9.

@@ -25,4 +25,8 @@ public interface TourRepository extends JpaRepository<Tour, Integer> {
             "LOWER(COALESCE(tl.comment, '')) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
             "LOWER(COALESCE(tl.difficulty, '')) LIKE LOWER(CONCAT('%', :searchText, '%'))")
     List<Tour> findByTourLogSearchText(@Param("searchText") String searchText);
+
+    // fetch all tours with their logs eagerly for export/serialization
+    @Query("SELECT DISTINCT t FROM Tour t LEFT JOIN FETCH t.tourLogs")
+    List<Tour> findAllWithLogs();
 }

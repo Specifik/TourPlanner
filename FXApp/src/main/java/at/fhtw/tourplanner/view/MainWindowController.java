@@ -24,6 +24,7 @@ import at.fhtw.tourplanner.bl.BL;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.List;
 
 public class MainWindowController {
 
@@ -260,7 +261,7 @@ public class MainWindowController {
     public void onMenuGenerateSummaryReport(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Summary Report");
-        fileChooser.setInitialFileName("tour_summary_report.pdf");
+        fileChooser.setInitialFileName("Tour_Summary_Report.pdf");
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("PDF Files", "*.pdf")
         );
@@ -282,8 +283,82 @@ public class MainWindowController {
                 Alert error = new Alert(Alert.AlertType.ERROR);
                 error.setTitle("Report Generation Failed");
                 error.setHeaderText("Could not generate summary report");
-                error.setContentText("Error: " + e.getMessage());
+                error.setContentText("An error occurred: " + e.getMessage());
                 error.showAndWait();
+            }
+        }
+    }
+
+    @FXML
+    public void onMenuFileImportClicked(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Import Tours");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json")
+        );
+        File file = fileChooser.showOpenDialog(detailsTabPane.getScene().getWindow());
+
+        if (file != null) {
+            try {
+                logger.info("Importing tours from: {}", file.getAbsolutePath());
+                BL.getInstance().importToursFromFile(file.getAbsolutePath());
+                // Refresh the tour list in the UI
+                tourOverviewController.getTourOverviewViewModel().refreshTours();
+                logger.info("Tour list refreshed after import.");
+
+                Alert success = new Alert(Alert.AlertType.INFORMATION);
+                success.setTitle("Import Successful");
+                success.setHeaderText("Tours imported successfully.");
+                success.setContentText("Tours have been imported from " + file.getName());
+                success.showAndWait();
+            } catch (IOException e) {
+                logger.error("Failed to import tours from file {}: {}", file.getAbsolutePath(), e.getMessage(), e);
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setTitle("Import Failed");
+                errorAlert.setHeaderText("Could not import tours from file.");
+                errorAlert.setContentText("An error occurred: " + e.getMessage());
+                errorAlert.showAndWait();
+            }
+        }
+    }
+
+    @FXML
+    public void onMenuFileExportClicked(ActionEvent actionEvent) {
+        List<Tour> toursToExport = tourOverviewController.getTourOverviewViewModel().getObservableTours();
+
+        if (toursToExport == null || toursToExport.isEmpty()) {
+            Alert infoAlert = new Alert(Alert.AlertType.INFORMATION);
+            infoAlert.setTitle("No Tours to Export");
+            infoAlert.setHeaderText("There are no tours available to export.");
+            infoAlert.showAndWait();
+            return;
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Export Tours");
+        fileChooser.setInitialFileName("tours.json");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json")
+        );
+        File file = fileChooser.showSaveDialog(detailsTabPane.getScene().getWindow());
+
+        if (file != null) {
+            try {
+                logger.info("Exporting {} tours to: {}", toursToExport.size(), file.getAbsolutePath());
+                BL.getInstance().exportAllTours(file.getAbsolutePath());
+
+                Alert success = new Alert(Alert.AlertType.INFORMATION);
+                success.setTitle("Export Successful");
+                success.setHeaderText("Tours exported successfully.");
+                success.setContentText("Tours have been exported to " + file.getName());
+                success.showAndWait();
+            } catch (IOException e) {
+                logger.error("Failed to export tours to file {}: {}", file.getAbsolutePath(), e.getMessage(), e);
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setTitle("Export Failed");
+                errorAlert.setHeaderText("Could not export tours to file.");
+                errorAlert.setContentText("An error occurred: " + e.getMessage());
+                errorAlert.showAndWait();
             }
         }
     }

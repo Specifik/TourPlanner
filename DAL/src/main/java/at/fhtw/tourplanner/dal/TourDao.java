@@ -157,4 +157,30 @@ public class TourDao implements Dao<Tour> {
             throw e;
         }
     }
+
+    public List<Tour> getAllWithLogs() {
+        logger.debug("Attempting to retrieve all tours with their logs.");
+        try {
+            List<Tour> tours = tourRepository.findAllWithLogs();
+            logger.info("Retrieved {} tours with logs.", tours.size());
+            return tours;
+        } catch (Exception e) {
+            logger.error("Error retrieving all tours with logs.", e);
+            throw e;
+        }
+    }
+
+    // save pre-populated tour from import
+    public Tour save(Tour tour) {
+        logger.debug("Attempting to save tour: {}", tour.getName());
+        try {
+            // ID should be 0 if it is a new tour from import -> Spring Data JPA will handle it
+            Tour savedTour = tourRepository.save(tour);
+            logger.info("Successfully saved tour: {} with id: {}", savedTour.getName(), savedTour.getId());
+            return savedTour;
+        } catch (Exception e) {
+            logger.error("Error saving tour: {}", tour.getName(), e);
+            throw e;
+        }
+    }
 }

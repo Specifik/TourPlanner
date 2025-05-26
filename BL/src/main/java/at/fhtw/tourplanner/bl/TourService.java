@@ -28,6 +28,16 @@ public class TourService {
         return DAL.getInstance().tourDao().getAll();
     }
 
+    public List<Tour> getAllToursWithLogs() {
+        logger.debug("Fetching all tours with their logs.");
+        try {
+            return ((at.fhtw.tourplanner.dal.TourDao) DAL.getInstance().tourDao()).getAllWithLogs();
+        } catch (Exception e) {
+            logger.error("Error fetching all tours with logs from TourService.", e);
+            throw e;
+        }
+    }
+
     public Optional<Tour> getTour(int id) {
         return DAL.getInstance().tourDao().get(id);
     }

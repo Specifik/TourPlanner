@@ -26,8 +26,8 @@ public class ReportService {
         logger.info("Generating tour report for: {}", tour.getName());
 
         try (PdfWriter writer = new PdfWriter(outputPath);
-             PdfDocument pdf = new PdfDocument(writer);
-             Document document = new Document(pdf)) {
+            PdfDocument pdf = new PdfDocument(writer);
+            Document document = new Document(pdf)) {
 
             // Title
             document.add(new Paragraph("Tour Report")
@@ -52,8 +52,8 @@ public class ReportService {
         logger.info("Generating summary report");
 
         try (PdfWriter writer = new PdfWriter(outputPath);
-             PdfDocument pdf = new PdfDocument(writer);
-             Document document = new Document(pdf)) {
+            PdfDocument pdf = new PdfDocument(writer);
+            Document document = new Document(pdf)) {
 
             // Title
             document.add(new Paragraph("Tour Summary Report")

@@ -9,8 +9,8 @@
       prefHeight="700.0" prefWidth="1000.0">
     <MenuBar>
         <Menu text="%Menu_File">
-            <MenuItem text="%Menu_File_Import"/>
-            <MenuItem text="%Menu_File_Export"/>
+            <MenuItem text="%Menu_File_Import" onAction="#onMenuFileImportClicked"/>
+            <MenuItem text="%Menu_File_Export" onAction="#onMenuFileExportClicked"/>
             <SeparatorMenuItem/>
             <MenuItem text="Generate Tour Report..." onAction="#onMenuGenerateTourReport"/>
             <MenuItem text="Generate Summary Report..." onAction="#onMenuGenerateSummaryReport"/>

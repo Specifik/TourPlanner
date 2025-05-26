@@ -168,4 +168,18 @@ public class TourLogDao {
             throw e;
         }
     }
+
+    // save pre-populated tour log from import
+    public TourLog save(TourLog tourLog) {
+        logger.debug("Attempting to save tour log for tour: {}", tourLog.getTour() != null ? tourLog.getTour().getName() : "null");
+        try {
+            // ID should be 0 if it is a new log from import -> Spring Data JPA will handle it
+            TourLog savedTourLog = tourLogRepository.save(tourLog);
+            logger.info("Successfully saved tour log with id: {} for tour id: {}", savedTourLog.getId(), savedTourLog.getTour().getId());
+            return savedTourLog;
+        } catch (Exception e) {
+            logger.error("Error saving tour log for tour: {}", tourLog.getTour() != null ? tourLog.getTour().getName() : "null", e);
+            throw e;
+        }
+    }
 }
