@@ -5,6 +5,8 @@ import at.fhtw.tourplanner.viewmodel.TourDetailsViewModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 
 public class TourDetailsController {
     @FXML
@@ -30,6 +32,12 @@ public class TourDetailsController {
 
     @FXML
     public Label validationLabel;
+
+    @FXML
+    private Button copyFromAddressButton;
+
+    @FXML
+    private Button copyToAddressButton;
 
     private final TourDetailsViewModel tourDetailsViewModel;
 
@@ -81,6 +89,22 @@ public class TourDetailsController {
     @FXML
     void onCancelClicked(ActionEvent event) {
         tourDetailsViewModel.resetToOriginal();
+    }
+
+    @FXML
+    void onCopyFromAddressClicked(ActionEvent event) {
+        final Clipboard clipboard = Clipboard.getSystemClipboard();
+        final ClipboardContent content = new ClipboardContent();
+        content.putString(fromTextField.getText());
+        clipboard.setContent(content);
+    }
+
+    @FXML
+    void onCopyToAddressClicked(ActionEvent event) {
+        final Clipboard clipboard = Clipboard.getSystemClipboard();
+        final ClipboardContent content = new ClipboardContent();
+        content.putString(toTextField.getText());
+        clipboard.setContent(content);
     }
 
     private void showValidationDialog() {

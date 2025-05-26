@@ -31,10 +31,16 @@
 
             <!-- From/To -->
             <Label text="From:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-            <TextField fx:id="fromTextField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <HBox spacing="5" alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <TextField fx:id="fromTextField" HBox.hgrow="ALWAYS" />
+                <Button fx:id="copyFromAddressButton" text="Copy" onAction="#onCopyFromAddressClicked" />
+            </HBox>
 
             <Label text="To:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-            <TextField fx:id="toTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <HBox spacing="5" alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <TextField fx:id="toTextField" HBox.hgrow="ALWAYS" />
+                <Button fx:id="copyToAddressButton" text="Copy" onAction="#onCopyToAddressClicked" />
+            </HBox>
 
             <!-- Transport Type -->
             <Label text="Transport Type:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
