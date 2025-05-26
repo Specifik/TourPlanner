@@ -17,6 +17,9 @@ import at.fhtw.tourplanner.bl.MapService;
 import javafx.scene.web.WebView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import javafx.stage.FileChooser;
+import java.io.File;
+import at.fhtw.tourplanner.bl.BL;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
@@ -210,5 +213,78 @@ public class MainWindowController {
         Alert aboutBox = new Alert(Alert.AlertType.INFORMATION, "TourPlanner Application\nCreated for SWEN2");
         aboutBox.setTitle("About TourPlanner");
         aboutBox.showAndWait();
+    }
+
+    public void onMenuGenerateTourReport(ActionEvent actionEvent) {
+        Tour selectedTour = tourOverviewController.getTourOverviewViewModel().selectedTourProperty().get();
+
+        if (selectedTour == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("No Tour Selected");
+            alert.setHeaderText("Please select a tour");
+            alert.setContentText("You need to select a tour before generating a tour report.");
+            alert.showAndWait();
+            return;
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Tour Report");
+        fileChooser.setInitialFileName(selectedTour.getName().replaceAll("[^a-zA-Z0-9]", "_") + "_report.pdf");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("PDF Files", "*.pdf")
+        );
+
+        File file = fileChooser.showSaveDialog(tourOverviewController.tourList.getScene().getWindow());
+        if (file != null) {
+            try {
+                logger.info("Generating tour report for: {}", selectedTour.getName());
+                BL.getInstance().generateTourReport(selectedTour, file.getAbsolutePath());
+
+                Alert success = new Alert(Alert.AlertType.INFORMATION);
+                success.setTitle("Report Generated");
+                success.setHeaderText("Tour report created successfully");
+                success.setContentText("Report saved to: " + file.getAbsolutePath());
+                success.showAndWait();
+
+            } catch (Exception e) {
+                logger.error("Failed to generate tour report", e);
+                Alert error = new Alert(Alert.AlertType.ERROR);
+                error.setTitle("Report Generation Failed");
+                error.setHeaderText("Could not generate tour report");
+                error.setContentText("Error: " + e.getMessage());
+                error.showAndWait();
+            }
+        }
+    }
+
+    public void onMenuGenerateSummaryReport(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Summary Report");
+        fileChooser.setInitialFileName("tour_summary_report.pdf");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("PDF Files", "*.pdf")
+        );
+
+        File file = fileChooser.showSaveDialog(tourOverviewController.tourList.getScene().getWindow());
+        if (file != null) {
+            try {
+                logger.info("Generating summary report");
+                BL.getInstance().generateSummaryReport(file.getAbsolutePath());
+
+                Alert success = new Alert(Alert.AlertType.INFORMATION);
+                success.setTitle("Report Generated");
+                success.setHeaderText("Summary report created successfully");
+                success.setContentText("Report saved to: " + file.getAbsolutePath());
+                success.showAndWait();
+
+            } catch (Exception e) {
+                logger.error("Failed to generate summary report", e);
+                Alert error = new Alert(Alert.AlertType.ERROR);
+                error.setTitle("Report Generation Failed");
+                error.setHeaderText("Could not generate summary report");
+                error.setContentText("Error: " + e.getMessage());
+                error.showAndWait();
+            }
+        }
     }
 }

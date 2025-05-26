@@ -18,6 +18,7 @@ public class BL {
     private final TourService tourService = new TourService();
     private static boolean initialized = false;
     private static final BL instance = new BL();
+    private final ReportService reportService = new ReportService();
 
     private BL() {
         logger.info("Business Logic layer initialized");
@@ -98,6 +99,26 @@ public class BL {
         } catch (Exception e) {
             logger.error("Search failed for: '{}'", trimmedSearchText, e);
             return new ArrayList<>();
+        }
+    }
+
+    public void generateTourReport(Tour tour, String outputPath) {
+        try {
+            reportService.generateTourReport(tour, outputPath);
+            logger.info("Tour report generated: {}", outputPath);
+        } catch (Exception e) {
+            logger.error("Failed to generate tour report for: {}", tour.getName(), e);
+            throw new RuntimeException("Report generation failed", e);
+        }
+    }
+
+    public void generateSummaryReport(String outputPath) {
+        try {
+            reportService.generateSummaryReport(outputPath);
+            logger.info("Summary report generated: {}", outputPath);
+        } catch (Exception e) {
+            logger.error("Failed to generate summary report", e);
+            throw new RuntimeException("Summary report generation failed", e);
         }
     }
 }

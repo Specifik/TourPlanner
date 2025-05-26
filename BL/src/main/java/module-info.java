@@ -5,6 +5,8 @@ module medialibbl {
     requires org.apache.httpcomponents.core5.httpcore5;
     requires javafx.web;
     requires org.apache.logging.log4j;
+    requires kernel;
+    requires layout;
 
     exports at.fhtw.tourplanner.bl;
 }
