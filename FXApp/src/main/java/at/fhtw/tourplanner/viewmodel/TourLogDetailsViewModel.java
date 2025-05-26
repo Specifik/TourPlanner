@@ -3,6 +3,8 @@ package at.fhtw.tourplanner.viewmodel;
 import at.fhtw.tourplanner.dal.DAL;
 import at.fhtw.tourplanner.model.TourLog;
 import javafx.beans.property.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,6 +14,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TourLogDetailsViewModel {
+
+    private static final Logger logger = LogManager.getLogger(TourLogDetailsViewModel.class);
+
     private TourLog tourLog;
     private boolean isNewLog;
     private boolean autoCloseOnSave = true;
@@ -164,10 +169,13 @@ public class TourLogDetailsViewModel {
         validateInput();
 
         if (!isValidInput.get() || tourLog == null) {
+            logger.warn("Tour log save failed: validation errors or null tour log");
             return false;
         }
 
         try {
+            logger.info("Saving tour log: ID={}, difficulty={}", tourLog.getId(), difficulty.get());
+
             int logId = tourLog.getId();
             int tourId = tourLog.getTourId();
 
@@ -198,9 +206,11 @@ public class TourLogDetailsViewModel {
                 closeDetails();
             }
 
+            logger.info("Tour log saved successfully: ID={}", tourLog.getId());
             return true;
+
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Failed to save tour log: ID={}", tourLog.getId(), e);
             return false;
         }
     }

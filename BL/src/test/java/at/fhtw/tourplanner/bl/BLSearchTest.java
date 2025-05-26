@@ -42,9 +42,6 @@ public class BLSearchTest {
         when(mockDal.tourDao()).thenReturn(mockTourDao);
         when(mockDal.tourLogDao()).thenReturn(mockTourLogDao);
         when(mockTourDao.getAll()).thenReturn(mockTours);
-
-        // Create BL instance
-        bl = new BL();
     }
 
     @Test

@@ -7,12 +7,17 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class TourDetailsViewModel {
+
+    private static final Logger logger = LogManager.getLogger(TourDetailsViewModel.class);
+
     private Tour tourModel;
     private volatile boolean isInitValue = false;
 
@@ -173,6 +178,7 @@ public class TourDetailsViewModel {
         }
 
         this.tourModel = tourModel;
+        logger.debug("Tour model set: {}", tourModel.getName());
 
         // Set the properties
         name.setValue(tourModel.getName());
@@ -194,6 +200,7 @@ public class TourDetailsViewModel {
 
     public void resetToOriginal() {
         if (tourModel != null) {
+            logger.debug("Resetting tour to original values: {}", tourModel.getName());
             isInitValue = true;
 
             name.setValue(originalName);
@@ -211,10 +218,13 @@ public class TourDetailsViewModel {
         validateInput();
 
         if (!isValidInput.get() || tourModel == null) {
+            logger.warn("Tour save failed: validation errors or null tour model");
             return false;
         }
 
         try {
+            logger.info("Saving tour: {}", name.get());
+
             tourModel.setName(name.get().trim());
             tourModel.setFrom(from.get().trim());
             tourModel.setTo(to.get().trim());
@@ -233,9 +243,11 @@ public class TourDetailsViewModel {
                 listener.onTourUpdated(tourModel);
             }
 
+            logger.info("Tour saved successfully: {}", tourModel.getName());
             return true;
+
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Failed to save tour: {}", name.get(), e);
             return false;
         }
     }

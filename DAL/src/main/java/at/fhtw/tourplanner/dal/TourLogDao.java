@@ -5,6 +5,8 @@ import at.fhtw.tourplanner.dal.repository.TourLogRepository;
 import at.fhtw.tourplanner.dal.repository.TourRepository;
 import at.fhtw.tourplanner.model.Tour;
 import at.fhtw.tourplanner.model.TourLog;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 
 import java.time.LocalDateTime;
@@ -13,6 +15,7 @@ import java.util.Optional;
 
 public class TourLogDao {
 
+    private static final Logger logger = LogManager.getLogger(TourLogDao.class);
     private final TourLogRepository tourLogRepository;
     private final TourRepository tourRepository;
 
@@ -20,105 +23,149 @@ public class TourLogDao {
         ApplicationContext context = DALConfiguration.getContext();
         this.tourLogRepository = context.getBean(TourLogRepository.class);
         this.tourRepository = context.getBean(TourRepository.class);
-
-        initializeSampleData(); // if database is empty
-    }
-
-    private void initializeSampleData() {
-        if (tourLogRepository.count() == 0) {
-            List<Tour> tours = tourRepository.findAll();
-            if (!tours.isEmpty()) {
-                Tour tour1 = tours.get(0);
-                Tour tour2 = tours.size() > 1 ? tours.get(1) : tour1;
-                Tour tour3 = tours.size() > 2 ? tours.get(2) : tour1;
-
-                TourLog log1 = new TourLog(0, tour1, LocalDateTime.now().minusDays(7),
-                        "War ziemlich heiß, nächstes Mal mehr Wasser mitnehmen", "Leicht", 4.8, 135, 3);
-                TourLog log2 = new TourLog(0, tour1, LocalDateTime.now().minusDays(3),
-                        "Bei Karlsplatz steht eine Baustelle, musste umgehen", "Leicht", 5.2, 145, 3);
-                TourLog log3 = new TourLog(0, tour2, LocalDateTime.now().minusDays(5),
-                        "Super Wetter, viele andere Radfahrer unterwegs", "Mittel", 9.3, 82, 4);
-                TourLog log4 = new TourLog(0, tour3, LocalDateTime.now().minusDays(2),
-                        "Letzte halbe Stunde im Regen, trotzdem cool", "Schwer", 13.2, 215, 4);
-
-                tourLogRepository.save(log1);
-                tourLogRepository.save(log2);
-                tourLogRepository.save(log3);
-                tourLogRepository.save(log4);
-            }
-        }
+        logger.info("TourLogDao initialized, TourLogRepository and TourRepository beans acquired.");
     }
 
     public Optional<TourLog> get(int id) {
-        return tourLogRepository.findById(id);
+        logger.debug("Attempting to retrieve tour log with id: {}", id);
+        try {
+            Optional<TourLog> tourLog = tourLogRepository.findById(id);
+            if (tourLog.isPresent()) {
+                logger.info("Retrieved tour log with id: {}", id);
+            } else {
+                logger.warn("No tour log found with id: {}", id);
+            }
+            return tourLog;
+        } catch (Exception e) {
+            logger.error("Error retrieving tour log with id: {}", id, e);
+            throw e;
+        }
     }
 
     public List<TourLog> getAll() {
-        return tourLogRepository.findAll();
+        logger.debug("Attempting to retrieve all tour logs.");
+        try {
+            List<TourLog> tourLogs = tourLogRepository.findAll();
+            logger.info("Retrieved {} tour logs.", tourLogs.size());
+            return tourLogs;
+        } catch (Exception e) {
+            logger.error("Error retrieving all tour logs.", e);
+            throw e;
+        }
     }
 
     public List<TourLog> getByTourId(int tourId) {
-        return tourLogRepository.findByTour_Id(tourId);
+        logger.debug("Attempting to retrieve tour logs for tourId: {}", tourId);
+        try {
+            List<TourLog> tourLogs = tourLogRepository.findByTour_Id(tourId);
+            logger.info("Retrieved {} tour logs for tourId: {}.", tourLogs.size(), tourId);
+            return tourLogs;
+        } catch (Exception e) {
+            logger.error("Error retrieving tour logs for tourId: {}.", tourId, e);
+            throw e;
+        }
     }
 
     public TourLog create(int tourId) {
-        Optional<Tour> tourOpt = tourRepository.findById(tourId);
-        if (tourOpt.isPresent()) {
-            Tour tour = tourOpt.get();
-            TourLog tourLog = new TourLog(0, tour, LocalDateTime.now(), "", "Leicht", 0.0, 0, 3);
-            return tourLogRepository.save(tourLog);
+        logger.debug("Attempting to create a new tour log for tourId: {}", tourId);
+        try {
+            Optional<Tour> tourOpt = tourRepository.findById(tourId);
+            if (tourOpt.isPresent()) {
+                Tour tour = tourOpt.get();
+                TourLog tourLog = new TourLog(0, tour, LocalDateTime.now(), "", "Leicht", 0.0, 0, 3);
+                TourLog savedTourLog = tourLogRepository.save(tourLog);
+                logger.info("Successfully created new tour log with id: {} for tourId: {}", savedTourLog.getId(), tourId);
+                return savedTourLog;
+            }
+            logger.warn("Cannot create tour log, tour with ID {} not found.", tourId);
+            throw new IllegalArgumentException("Tour with ID " + tourId + " not found");
+        } catch (IllegalArgumentException e) {
+            throw e; // Re-throw known exception
+        } catch (Exception e) {
+            logger.error("Error creating new tour log for tourId: {}.", tourId, e);
+            throw e;
         }
-        throw new IllegalArgumentException("Tour with ID " + tourId + " not found");
     }
 
     public void update(TourLog tourLog, List<?> params) {
+        // Assuming params.get(0) is logId and params.get(1) is tourId for logging context
+        logger.debug("Attempting to update tour log with id: {} for tour id: {}", params.get(0), params.get(1));
         if (params.size() >= 8) {
             int logId = (Integer) params.get(0);
             int tourId = (Integer) params.get(1);
+            try {
+                Optional<TourLog> existingLogOpt = tourLogRepository.findById(logId);
+                Optional<Tour> tourOpt = tourRepository.findById(tourId);
 
-            Optional<TourLog> existingLogOpt = tourLogRepository.findById(logId);
-            Optional<Tour> tourOpt = tourRepository.findById(tourId);
+                if (existingLogOpt.isPresent() && tourOpt.isPresent()) {
+                    TourLog existingLog = existingLogOpt.get();
+                    Tour tour = tourOpt.get();
+                    logger.trace("Found existing tour log id: {} and tour id: {}", logId, tourId);
 
-            if (existingLogOpt.isPresent() && tourOpt.isPresent()) {
-                TourLog existingLog = existingLogOpt.get();
-                Tour tour = tourOpt.get();
+                    existingLog.setTour(tour);
+                    existingLog.setDateTime((LocalDateTime) params.get(2));
+                    existingLog.setComment((String) params.get(3));
+                    existingLog.setDifficulty((String) params.get(4));
 
-                existingLog.setTour(tour);
-                existingLog.setDateTime((LocalDateTime) params.get(2));
-                existingLog.setComment((String) params.get(3));
-                existingLog.setDifficulty((String) params.get(4));
+                    try {
+                        existingLog.setTotalDistance((Double) params.get(5));
+                    } catch (ClassCastException e) {
+                        existingLog.setTotalDistance(Double.parseDouble(params.get(5).toString()));
+                    }
+                    try {
+                        existingLog.setTotalTime((Integer) params.get(6));
+                    } catch (ClassCastException e) {
+                        existingLog.setTotalTime(Integer.parseInt(params.get(6).toString()));
+                    }
+                    try {
+                        existingLog.setRating((Integer) params.get(7));
+                    } catch (ClassCastException e) {
+                        existingLog.setRating(Integer.parseInt(params.get(7).toString()));
+                    }
 
-                try {
-                    existingLog.setTotalDistance((Double) params.get(5));
-                } catch (ClassCastException e) {
-                    existingLog.setTotalDistance(Double.parseDouble(params.get(5).toString()));
+                    tourLogRepository.save(existingLog);
+                    logger.info("Successfully updated tour log with id: {}", logId);
+                } else {
+                    if (!existingLogOpt.isPresent()) {
+                        logger.warn("Update failed: No tour log found with id: {}", logId);
+                    }
+                    if (!tourOpt.isPresent()) {
+                        logger.warn("Update failed: No tour found with id: {} for tour log {}", tourId, logId);
+                    }
                 }
-
-                try {
-                    existingLog.setTotalTime((Integer) params.get(6));
-                } catch (ClassCastException e) {
-                    existingLog.setTotalTime(Integer.parseInt(params.get(6).toString()));
-                }
-
-                try {
-                    existingLog.setRating((Integer) params.get(7));
-                } catch (ClassCastException e) {
-                    existingLog.setRating(Integer.parseInt(params.get(7).toString()));
-                }
-
-                tourLogRepository.save(existingLog);
+            } catch (Exception e) {
+                logger.error("Error updating tour log with id: {}", logId, e);
+                // Consider if re-throwing is always appropriate or if some exceptions can be handled
             }
+        } else {
+            logger.warn("Update tour log called with insufficient parameters. Expected at least 8, got {}.", params.size());
         }
     }
 
     public void delete(TourLog tourLog) {
-        tourLogRepository.delete(tourLog);
+        logger.debug("Attempting to delete tour log with id: {}", tourLog.getId());
+        try {
+            tourLogRepository.delete(tourLog);
+            logger.info("Successfully deleted tour log with id: {}", tourLog.getId());
+        } catch (Exception e) {
+            logger.error("Error deleting tour log with id: {}", tourLog.getId(), e);
+            throw e;
+        }
     }
 
     public List<TourLog> findBySearchText(String searchText) {
-        if (searchText == null || searchText.trim().isEmpty()) {
-            return getAll();
+        logger.debug("Searching tour logs by text: '{}'", searchText);
+        try {
+            if (searchText == null || searchText.trim().isEmpty()) {
+                logger.trace("Search text is empty, returning all tour logs.");
+                return getAll();
+            }
+            List<TourLog> results = tourLogRepository.findBySearchText(searchText.trim());
+            logger.info("Found {} tour logs matching text: '{}'", results.size(), searchText);
+            return results;
+        } catch (Exception e) {
+            logger.error("Error searching tour logs by text: '{}'", searchText, e);
+            throw e;
         }
-        return tourLogRepository.findBySearchText(searchText.trim());
     }
 }

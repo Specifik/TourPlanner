@@ -2,6 +2,8 @@ package at.fhtw.tourplanner.bl;
 
 import at.fhtw.tourplanner.dal.DAL;
 import at.fhtw.tourplanner.model.Tour;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,10 +12,16 @@ import java.util.Optional;
 
 public class TourService {
 
+    private static final Logger logger = LogManager.getLogger(TourService.class);
     private final OpenRouteServiceClient apiClient = new OpenRouteServiceClient();
 
     public Tour createTour() {
-        return DAL.getInstance().tourDao().create();
+        try {
+            return DAL.getInstance().tourDao().create();
+        } catch (Exception e) {
+            logger.error("Failed to create tour", e);
+            throw e;
+        }
     }
 
     public List<Tour> getAllTours() {
@@ -25,54 +33,73 @@ public class TourService {
     }
 
     public void updateTour(Tour tour) {
-        Optional<Tour> existingOpt = DAL.getInstance().tourDao().get(tour.getId());
+        try {
+            Optional<Tour> existingOpt = DAL.getInstance().tourDao().get(tour.getId());
 
-        if (existingOpt.isPresent()) {
-            Tour existing = existingOpt.get();
+            if (existingOpt.isPresent()) {
+                Tour existing = existingOpt.get();
 
-            // Check if route fields changed
-            boolean needsApiUpdate = !Objects.equals(existing.getFrom(), tour.getFrom()) ||
-                    !Objects.equals(existing.getTo(), tour.getTo()) ||
-                    !Objects.equals(existing.getTransportType(), tour.getTransportType());
+                // Check if route fields changed
+                boolean needsApiUpdate = !Objects.equals(existing.getFrom(), tour.getFrom()) ||
+                        !Objects.equals(existing.getTo(), tour.getTo()) ||
+                        !Objects.equals(existing.getTransportType(), tour.getTransportType());
 
-            // Update basic tour data
-            DAL.getInstance().tourDao().update(tour, Arrays.asList(
-                    tour.getId(),
-                    tour.getName(),
-                    tour.getFrom(),
-                    tour.getTo(),
-                    tour.getTransportType(),
-                    tour.getDescription()
-            ));
+                // Update basic tour data
+                DAL.getInstance().tourDao().update(tour, Arrays.asList(
+                        tour.getId(),
+                        tour.getName(),
+                        tour.getFrom(),
+                        tour.getTo(),
+                        tour.getTransportType(),
+                        tour.getDescription()
+                ));
 
-            // Update with API data if route changed
-            if (needsApiUpdate && !tour.getFrom().isEmpty() && !tour.getTo().isEmpty()) {
-                updateTourWithApiData(tour);
+                // Update with API data if route changed
+                if (needsApiUpdate && !tour.getFrom().isEmpty() && !tour.getTo().isEmpty()) {
+                    logger.info("Updating route data for tour: {}", tour.getName());
+                    updateTourWithApiData(tour);
+                }
             }
+        } catch (Exception e) {
+            logger.error("Failed to update tour: {}", tour.getName(), e);
+            throw e;
         }
     }
 
     public void deleteTour(Tour tour) {
-        DAL.getInstance().tourDao().delete(tour);
+        try {
+            DAL.getInstance().tourDao().delete(tour);
+        } catch (Exception e) {
+            logger.error("Failed to delete tour: {}", tour.getName(), e);
+            throw e;
+        }
     }
 
     public void refreshTourApiData(Tour tour) {
+        logger.info("Refreshing API data for tour: {}", tour.getName());
         updateTourWithApiData(tour);
     }
 
     public void initializeToursWithApiData() {
+        logger.info("Initializing tours with API data");
         List<Tour> tours = getAllTours();
+        int updated = 0;
+
         for (Tour tour : tours) {
             if (!tour.getFrom().isEmpty() && !tour.getTo().isEmpty() && tour.getTourDistance() == 0) {
                 updateTourWithApiData(tour);
+                updated++;
             }
         }
+
+        logger.info("Initialized {} tours with API data", updated);
     }
 
     private void updateTourWithApiData(Tour tour) {
         if (tour.getFrom().isEmpty() || tour.getTo().isEmpty()) {
             return;
         }
+
         try {
             OpenRouteServiceClient.RouteResult result = apiClient.getRoute(
                     tour.getFrom(),
@@ -80,16 +107,9 @@ public class TourService {
                     tour.getTransportType()
             );
 
-            // Update tour with API data
             tour.setTourDistance(result.getDistance());
             tour.setEstimatedTime(result.getDuration());
             tour.setRouteGeoJson(result.getGeoJson());
-
-            if (tour.getRouteGeoJson() != null && tour.getRouteGeoJson().length() > 0) {
-                String preview = tour.getRouteGeoJson().length() > 100
-                        ? tour.getRouteGeoJson().substring(0, 100) + "..."
-                        : tour.getRouteGeoJson();
-            }
 
             DAL.getInstance().tourDao().update(tour, Arrays.asList(
                     tour.getId(),
@@ -103,8 +123,7 @@ public class TourService {
                     tour.getRouteGeoJson()
             ));
         } catch (Exception e) {
-            System.err.println("Failed to update tour with API data: " + e.getMessage());
-            e.printStackTrace();
+            logger.error("Failed to update API data for tour: {}", tour.getName(), e);
         }
     }
 }

@@ -8,52 +8,73 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 public class OpenRouteServiceClient {
+
+    private static final Logger logger = LogManager.getLogger(OpenRouteServiceClient.class);
+
     private static final String API_KEY = "5b3ce3597851110001cf6248cc654ebae1004f068c8db0174163a2ce";
     private static final String BASE_URL = "https://api.openrouteservice.org";
 
     private final ObjectMapper mapper = new ObjectMapper();
 
     public Coordinates geocodeAddress(String address) throws IOException {
-        String url = BASE_URL + "/geocode/search?api_key=" + API_KEY +
-                "&text=" + URLEncoder.encode(address + ", Austria", StandardCharsets.UTF_8);
+        try {
+            String url = BASE_URL + "/geocode/search?api_key=" + API_KEY +
+                    "&text=" + URLEncoder.encode(address + ", Austria", StandardCharsets.UTF_8);
 
-        JsonNode response = makeRequest(url);
-        JsonNode features = response.get("features");
+            JsonNode response = makeRequest(url);
+            JsonNode features = response.get("features");
 
-        if (features.size() == 0) {
-            throw new IOException("Address not found: " + address);
+            if (features.size() == 0) {
+                logger.warn("Address not found: {}", address);
+                throw new IOException("Address not found: " + address);
+            }
+
+            JsonNode coords = features.get(0).get("geometry").get("coordinates");
+            return new Coordinates(coords.get(0).asDouble(), coords.get(1).asDouble());
+
+        } catch (IOException e) {
+            logger.error("Geocoding failed for address: {}", address, e);
+            throw e;
         }
-
-        JsonNode coords = features.get(0).get("geometry").get("coordinates");
-        return new Coordinates(coords.get(0).asDouble(), coords.get(1).asDouble());
     }
 
     public RouteResult getRoute(String fromAddress, String toAddress, String transportType) throws IOException {
-        // 1. Get coordinates
-        Coordinates from = geocodeAddress(fromAddress);
-        Coordinates to = geocodeAddress(toAddress);
+        try {
+            // Get coordinates
+            Coordinates from = geocodeAddress(fromAddress);
+            Coordinates to = geocodeAddress(toAddress);
 
-        // 2. Get route
-        String profile = getProfile(transportType);
-        String url = BASE_URL + "/v2/directions/" + profile + "?api_key=" + API_KEY +
-                "&start=" + from.lon + "," + from.lat +
-                "&end=" + to.lon + "," + to.lat;
+            // Get route
+            String profile = getProfile(transportType);
+            String url = BASE_URL + "/v2/directions/" + profile + "?api_key=" + API_KEY +
+                    "&start=" + from.lon + "," + from.lat +
+                    "&end=" + to.lon + "," + to.lat;
 
-        JsonNode response = makeRequest(url);
-        JsonNode feature = response.get("features").get(0);
-        JsonNode summary = feature.get("properties").get("summary");
+            JsonNode response = makeRequest(url);
+            JsonNode feature = response.get("features").get(0);
+            JsonNode summary = feature.get("properties").get("summary");
 
-        double distance = summary.get("distance").asDouble() / 1000.0;
-        int duration = summary.get("duration").asInt() / 60;
-        String geoJson = feature.toString();
+            double distance = summary.get("distance").asDouble() / 1000.0;
+            int duration = summary.get("duration").asInt() / 60;
+            String geoJson = feature.toString();
 
-        return new RouteResult(distance, duration, geoJson);
+            logger.info("Route calculated: {} to {} - {:.1f}km, {}min",
+                    fromAddress, toAddress, distance, duration);
+
+            return new RouteResult(distance, duration, geoJson);
+
+        } catch (IOException e) {
+            logger.error("Route calculation failed: {} to {}", fromAddress, toAddress, e);
+            throw e;
+        }
     }
 
     public boolean testConnection() {
@@ -61,6 +82,7 @@ public class OpenRouteServiceClient {
             geocodeAddress("Vienna");
             return true;
         } catch (Exception e) {
+            logger.warn("API connection test failed: {}", e.getMessage());
             return false;
         }
     }
@@ -70,13 +92,16 @@ public class OpenRouteServiceClient {
              CloseableHttpResponse response = client.execute(new HttpGet(url))) {
 
             if (response.getCode() != 200) {
+                logger.error("API error - Status code: {}", response.getCode());
                 throw new IOException("API error: " + response.getCode());
             }
 
             String json = EntityUtils.toString(response.getEntity());
             return mapper.readTree(json);
+
         } catch (ParseException e) {
-            throw new RuntimeException(e);
+            logger.error("Failed to parse API response", e);
+            throw new IOException("Failed to parse API response", e);
         }
     }
 

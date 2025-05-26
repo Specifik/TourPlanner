@@ -15,12 +15,17 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import at.fhtw.tourplanner.bl.MapService;
 import javafx.scene.web.WebView;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public class MainWindowController {
+
+    private static final Logger logger = LogManager.getLogger(MainWindowController.class);
+
     @FXML private SearchBarController searchBarController;
     @FXML private TourOverviewController tourOverviewController;
     @FXML private TourDetailsController tourDetailsController;
@@ -37,6 +42,7 @@ public class MainWindowController {
 
     public MainWindowController(MainWindowViewModel mainWindowViewModel) {
         this.mainWindowViewModel = mainWindowViewModel;
+        logger.debug("MainWindowController initialized");
     }
 
     public MainWindowViewModel getMainWindowViewModel() {
@@ -45,22 +51,38 @@ public class MainWindowController {
 
     @FXML
     void initialize() {
-        // method called after all @FXML fields have been initialized
+        logger.info("Initializing main window components");
 
-        if (detailsTabPane.getTabs().size() > 0) {
-            tourDetailsTab = detailsTabPane.getTabs().get(0);
+        try {
+            // method called after all @FXML fields have been initialized
+            if (detailsTabPane.getTabs().size() > 0) {
+                tourDetailsTab = detailsTabPane.getTabs().get(0);
+            }
+
+            setupTourSelectionListeners();
+            setupTourLogListeners();
+            setupTourUpdateListeners();
+            setupMapDisplay();
+
+            logger.info("Main window initialization completed successfully");
+
+        } catch (Exception e) {
+            logger.error("Failed to initialize main window", e);
         }
+    }
 
+    private void setupTourSelectionListeners() {
         if (tourLogsController != null && tourOverviewController != null) {
             tourOverviewController.getTourOverviewViewModel().addSelectionChangedListener(selectedTour -> {
                 if (tourDetailsTab != null) {
                     detailsTabPane.getSelectionModel().select(tourDetailsTab);
                 }
-
                 tourLogsController.getTourLogsViewModel().setCurrentTour(selectedTour);
             });
         }
+    }
 
+    private void setupTourLogListeners() {
         if (tourLogsController != null) {
             tourLogsController.getTourLogsViewModel().addTourLogDetailsOpenListener(
                     this::showTourLogDetails
@@ -70,13 +92,17 @@ public class MainWindowController {
                     this::closeTourLogDetails
             );
         }
+    }
 
+    private void setupTourUpdateListeners() {
         if (tourDetailsController != null && tourOverviewController != null) {
             tourDetailsController.getTourDetailsViewModel().addTourUpdatedListener(
                     this::handleTourUpdated
             );
         }
+    }
 
+    private void setupMapDisplay() {
         if (mapWebView != null) {
             mapService.showNoRouteMessage(mapWebView);
         }
@@ -90,18 +116,25 @@ public class MainWindowController {
                 tourLogsController.getTourLogsViewModel().setCurrentTour(selectedTour);
 
                 // Display map for selected tour
-                if (selectedTour != null && mapWebView != null) {
-                    if (selectedTour.getRouteGeoJson() != null && !selectedTour.getRouteGeoJson().trim().isEmpty()) {
-                        mapService.displayTourMap(mapWebView, selectedTour.getRouteGeoJson(), selectedTour.getName());
-                    } else {
-                        mapService.showNoRouteMessage(mapWebView);
-                    }
-                }
+                displayTourMap(selectedTour);
             });
         }
     }
 
+    private void displayTourMap(Tour selectedTour) {
+        if (selectedTour != null && mapWebView != null) {
+            if (selectedTour.getRouteGeoJson() != null && !selectedTour.getRouteGeoJson().trim().isEmpty()) {
+                logger.debug("Displaying map for tour: {}", selectedTour.getName());
+                mapService.displayTourMap(mapWebView, selectedTour.getRouteGeoJson(), selectedTour.getName());
+            } else {
+                logger.debug("No route data available for tour: {}", selectedTour.getName());
+                mapService.showNoRouteMessage(mapWebView);
+            }
+        }
+    }
+
     private void handleTourUpdated(Tour updatedTour) {
+        logger.info("Handling tour update: {}", updatedTour.getName());
         // Force an immediate UI refresh
         Platform.runLater(() -> {
             tourOverviewController.getTourOverviewViewModel().handleTourUpdated(updatedTour);
@@ -111,6 +144,8 @@ public class MainWindowController {
 
     private void showTourLogDetails(TourLog tourLog) {
         try {
+            logger.debug("Opening tour log details for log ID: {}", tourLog.getId());
+
             if (tourLogTab == null) {
                 FXMLLoader loader = FXMLDependencyInjection.getLoader("TourLogDetails.fxml", Locale.getDefault());
                 Parent root = loader.load();
@@ -128,17 +163,17 @@ public class MainWindowController {
                 tourLogTab.setOnClosed(event -> {
                     tourLogTab = null;
                     tourLogDetailsController = null;
+                    logger.debug("Tour log details tab closed");
                 });
 
                 detailsTabPane.getTabs().add(tourLogTab);
             }
 
             updateTourLogTab(tourLog);
-
             detailsTabPane.getSelectionModel().select(tourLogTab);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Failed to open tour log details", e);
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Could not open tour log details");
@@ -158,6 +193,7 @@ public class MainWindowController {
 
     private void closeTourLogDetails(TourLog tourLog) {
         if (tourLogTab != null) {
+            logger.debug("Closing tour log details");
             detailsTabPane.getTabs().remove(tourLogTab);
             tourLogTab = null;
             tourLogDetailsController = null;
@@ -165,10 +201,12 @@ public class MainWindowController {
     }
 
     public void onMenuFileQuitClicked(ActionEvent actionEvent) {
+        logger.info("Application quit requested");
         Platform.exit();
     }
 
     public void onMenuHelpAboutClicked(ActionEvent actionEvent) {
+        logger.debug("About dialog opened");
         Alert aboutBox = new Alert(Alert.AlertType.INFORMATION, "TourPlanner Application\nCreated for SWEN2");
         aboutBox.setTitle("About TourPlanner");
         aboutBox.showAndWait();

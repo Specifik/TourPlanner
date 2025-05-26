@@ -8,12 +8,17 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.application.Platform;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TourLogsViewModel {
+
+    private static final Logger logger = LogManager.getLogger(TourLogsViewModel.class);
+
     private final ObservableList<TourLog> observableTourLogs = FXCollections.observableArrayList();
     private final ObjectProperty<Tour> currentTour = new SimpleObjectProperty<>();
     private final ObjectProperty<TourLog> selectedTourLog = new SimpleObjectProperty<>();
@@ -33,6 +38,7 @@ public class TourLogsViewModel {
         // When the current tour changes, update the tour logs list
         currentTour.addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
+                logger.debug("Current tour changed to: {}", newValue.getName());
                 loadTourLogs(newValue.getId());
             } else {
                 observableTourLogs.clear();
@@ -57,11 +63,16 @@ public class TourLogsViewModel {
     }
 
     private void loadTourLogs(int tourId) {
-        observableTourLogs.clear();
+        try {
+            observableTourLogs.clear();
 
-        if (DAL.getInstance().tourLogDao() != null) {
-            List<TourLog> tourLogs = DAL.getInstance().tourLogDao().getByTourId(tourId);
-            observableTourLogs.addAll(tourLogs);
+            if (DAL.getInstance().tourLogDao() != null) {
+                List<TourLog> tourLogs = DAL.getInstance().tourLogDao().getByTourId(tourId);
+                observableTourLogs.addAll(tourLogs);
+                logger.debug("Loaded {} tour logs for tour ID: {}", tourLogs.size(), tourId);
+            }
+        } catch (Exception e) {
+            logger.error("Failed to load tour logs for tour ID: {}", tourId, e);
         }
     }
 
@@ -78,21 +89,34 @@ public class TourLogsViewModel {
     public void addNewTourLog() {
         Tour tour = currentTour.get();
         if (tour != null && DAL.getInstance().tourLogDao() != null) {
-            TourLog newLog = DAL.getInstance().tourLogDao().create(tour.getId());
-            refreshTourLogs(); // Reload to get the fresh list
-            openTourLogDetails(newLog);
+            try {
+                logger.info("Creating new tour log for tour: {}", tour.getName());
+                TourLog newLog = DAL.getInstance().tourLogDao().create(tour.getId());
+                refreshTourLogs(); // Reload to get the fresh list
+                openTourLogDetails(newLog);
+                logger.info("New tour log created with ID: {}", newLog.getId());
+            } catch (Exception e) {
+                logger.error("Failed to create new tour log for tour: {}", tour.getName(), e);
+            }
         }
     }
 
     public void deleteTourLog(TourLog tourLog) {
         if (tourLog != null && DAL.getInstance().tourLogDao() != null) {
-            DAL.getInstance().tourLogDao().delete(tourLog);
-            refreshTourLogs();
+            try {
+                logger.info("Deleting tour log ID: {}", tourLog.getId());
+                DAL.getInstance().tourLogDao().delete(tourLog);
+                refreshTourLogs();
+                logger.info("Tour log deleted successfully");
+            } catch (Exception e) {
+                logger.error("Failed to delete tour log ID: {}", tourLog.getId(), e);
+            }
         }
     }
 
     public void editTourLog(TourLog tourLog) {
         if (tourLog != null) {
+            logger.debug("Opening tour log for editing: ID {}", tourLog.getId());
             openTourLogDetails(tourLog);
         }
     }

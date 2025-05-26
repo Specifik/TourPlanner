@@ -10,6 +10,7 @@ module medialibdal {
     requires jakarta.persistence;
     requires org.hibernate.orm.core;
     requires spring.data.commons;
+    requires org.apache.logging.log4j;
 
     exports at.fhtw.tourplanner.dal;
     exports at.fhtw.tourplanner.model;

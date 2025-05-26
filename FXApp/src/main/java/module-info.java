@@ -1,9 +1,9 @@
 module medialib {
     requires javafx.fxml;
-    requires java.sql;
     requires medialibbl;
     requires medialibdal;
     requires javafx.web;
+    requires org.apache.logging.log4j;
 
     opens at.fhtw.tourplanner.view to javafx.graphics, javafx.fxml;
     exports at.fhtw.tourplanner;

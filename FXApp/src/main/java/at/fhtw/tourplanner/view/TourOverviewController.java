@@ -28,13 +28,11 @@ public class TourOverviewController {
     @FXML
     void initialize() {
         tourList.setItems(tourOverviewViewModel.getObservableTours());
-
         tourList.getSelectionModel().selectedItemProperty().addListener(tourOverviewViewModel.getChangeListener());
     }
 
     @FXML
     public void onButtonAdd(ActionEvent event) {
-        System.out.println("Add button clicked");
         Tour newTour = tourOverviewViewModel.addNewTour();
 
         Platform.runLater(() -> {
