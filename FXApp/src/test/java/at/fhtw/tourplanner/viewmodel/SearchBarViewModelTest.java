@@ -11,11 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-// Required for JavaFX toolkit initialization if not running full TestFX tests
-// but since TestFX dependencies are present, this might already be handled.
-// For pure JUnit/Mockito tests of ViewModels with JavaFX properties, 
-// if you get "Toolkit not initialized", you might need to extend Application or use a TestFX runner.
-// However, let's try without specific TestFX setup first for a simple ViewModel test.
 @ExtendWith(MockitoExtension.class) // For @Mock annotation
 public class SearchBarViewModelTest {
 
