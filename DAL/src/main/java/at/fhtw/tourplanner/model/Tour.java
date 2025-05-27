@@ -66,6 +66,15 @@ public class Tour implements Serializable {
         this.description = description;
     }
 
+    // Constructor for tests (ID will be auto-generated)
+    public Tour(String name, String from, String to, String transportType, String description) {
+        this.name = name;
+        this.from = from;
+        this.to = to;
+        this.transportType = transportType;
+        this.description = description;
+    }
+
     // Getters and Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }

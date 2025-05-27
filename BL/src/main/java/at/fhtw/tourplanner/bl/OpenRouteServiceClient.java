@@ -23,6 +23,17 @@ public class OpenRouteServiceClient {
     private static final String BASE_URL = "https://api.openrouteservice.org";
 
     private final ObjectMapper mapper = new ObjectMapper();
+    private final CloseableHttpClient httpClient;
+
+    // Default constructor for production
+    public OpenRouteServiceClient() {
+        this.httpClient = HttpClients.createDefault();
+    }
+
+    // Constructor for testing with a mock client
+    OpenRouteServiceClient(CloseableHttpClient httpClient) {
+        this.httpClient = httpClient;
+    }
 
     public Coordinates geocodeAddress(String address) throws IOException {
         try {
@@ -88,8 +99,7 @@ public class OpenRouteServiceClient {
     }
 
     private JsonNode makeRequest(String url) throws IOException {
-        try (CloseableHttpClient client = HttpClients.createDefault();
-             CloseableHttpResponse response = client.execute(new HttpGet(url))) {
+        try (CloseableHttpResponse response = this.httpClient.execute(new HttpGet(url))) {
 
             if (response.getCode() != 200) {
                 logger.error("API error - Status code: {}", response.getCode());
@@ -105,7 +115,8 @@ public class OpenRouteServiceClient {
         }
     }
 
-    private String getProfile(String transportType) {
+    // Make package-private for testing
+    String getProfile(String transportType) {
         if (transportType == null) return "driving-car";
 
         return switch (transportType.toLowerCase()) {

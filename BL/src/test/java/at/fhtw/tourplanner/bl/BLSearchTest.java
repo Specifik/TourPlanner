@@ -31,39 +31,67 @@ public class BLSearchTest {
         mockTourDao = mock(TourDao.class);
         mockTourLogDao = mock(TourLogDao.class);
 
-        // Setup mock tours
+        // It's important that BL.getInstance() does not trigger real DAL operations
+        // that might interfere or happen before/during static mocking.
+        // For unit testing BL, it would be better if BL allowed DAOs to be injected.
+        // bl = BL.getInstance(); // Delay getting BL instance until DAL is statically mocked in test method
+
+        // Setup mock tours - ensure these have enough fields for a search to potentially work if it were real
         Tour tour1 = new Tour(1, "Vienna City Walk", "Stephansplatz", "Karlsplatz");
+        tour1.setDescription("A walk in Vienna.");
         Tour tour2 = new Tour(2, "Danube Island Tour", "Donauinsel Nord", "Donauinsel Süd");
+        tour2.setDescription("Tour of Danube Island.");
         Tour tour3 = new Tour(3, "Kahlenberg Hike", "Nussdorf", "Kahlenberg");
+        tour3.setDescription("A hike to Kahlenberg.");
 
         mockTours = Arrays.asList(tour1, tour2, tour3);
 
-        // Configure mock behavior
+        // General DAL setup
         when(mockDal.tourDao()).thenReturn(mockTourDao);
         when(mockDal.tourLogDao()).thenReturn(mockTourLogDao);
-        when(mockTourDao.getAll()).thenReturn(mockTours);
+
+        // General TourDao setup (if methods are called outside specific test path)
+        // when(mockTourDao.getAll()).thenReturn(mockTours); // This was for a different test
     }
 
     @Test
     void testSearchToursWithEmptySearchText() {
+        // This test implies findMatchingTours(\"\") should return all tours.
+        // The BL.findMatchingTours handles empty searchText by calling getAllTours().
+        // So, mockTourDao.getAll() needs to be set up.
         try (MockedStatic<DAL> dalMockedStatic = Mockito.mockStatic(DAL.class)) {
             dalMockedStatic.when(DAL::getInstance).thenReturn(mockDal);
+            bl = BL.getInstance();
 
-            // Test with empty search text - should return all tours
+            // BL.findMatchingTours calls getAllTours() if searchText is empty.
+            // getAllTours() calls tourService.getAllTours().
+            // tourService.getAllTours() calls DAL.getInstance().tourDao().getAll().
+            when(mockTourDao.getAll()).thenReturn(mockTours);
+
             List<Tour> result = bl.findMatchingTours("");
 
-            // Verify that all tours are returned
             assertEquals(3, result.size(), "All tours should be returned for empty search text");
         }
     }
 
     @Test
     void testSearchToursWithMatchingText() {
+        // Get BL instance AFTER static DAL mock is in place for the whole test method duration
         try (MockedStatic<DAL> dalMockedStatic = Mockito.mockStatic(DAL.class)) {
             dalMockedStatic.when(DAL::getInstance).thenReturn(mockDal);
+            
+            bl = BL.getInstance(); // Get BL instance here, now it will use the mocked DAL via DAL.getInstance()
 
-            // Test with text that matches one tour
-            List<Tour> result = bl.findMatchingTours("Kahlenberg");
+            Tour kahlenbergTour = mockTours.stream()
+                                     .filter(t -> "Kahlenberg Hike".equals(t.getName()))
+                                     .findFirst()
+                                     .orElseThrow(() -> new AssertionError("Kahlenberg tour not found in mock data"));
+
+            // Explicitly mock the calls made by findMatchingTours("Kahlenberg", "All")
+            when(mockTourDao.findBySearchText("Kahlenberg")).thenReturn(List.of(kahlenbergTour));
+            when(mockTourDao.findByTourLogSearchText("Kahlenberg")).thenReturn(List.of()); // Assuming no log matches
+
+            List<Tour> result = bl.findMatchingTours("Kahlenberg"); // This will use scope "All"
 
             assertEquals(1, result.size(), "Only one tour should match 'Kahlenberg'");
             assertEquals("Kahlenberg Hike", result.get(0).getName());
@@ -74,8 +102,11 @@ public class BLSearchTest {
     void testSearchToursWithNonMatchingText() {
         try (MockedStatic<DAL> dalMockedStatic = Mockito.mockStatic(DAL.class)) {
             dalMockedStatic.when(DAL::getInstance).thenReturn(mockDal);
+            bl = BL.getInstance();
 
-            // Test with text that matches no tours
+            when(mockTourDao.findBySearchText("Mountain")).thenReturn(List.of());
+            when(mockTourDao.findByTourLogSearchText("Mountain")).thenReturn(List.of());
+
             List<Tour> result = bl.findMatchingTours("Mountain");
 
             assertEquals(0, result.size(), "No tours should match 'Mountain'");

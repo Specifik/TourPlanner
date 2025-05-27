@@ -66,6 +66,6 @@ public class OpenRouteServiceTest {
             }
         }
 
-        System.out.println("\nAPI integration test completed successfully! 🎉");
+        System.out.println("\nAPI integration test completed successfully!");
     }
 }
