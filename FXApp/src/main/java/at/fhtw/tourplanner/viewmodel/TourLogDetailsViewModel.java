@@ -1,5 +1,6 @@
 package at.fhtw.tourplanner.viewmodel;
 
+import at.fhtw.tourplanner.bl.BL;
 import at.fhtw.tourplanner.dal.DAL;
 import at.fhtw.tourplanner.model.TourLog;
 import javafx.beans.property.*;
@@ -176,9 +177,7 @@ public class TourLogDetailsViewModel {
         try {
             logger.info("Saving tour log: ID={}, difficulty={}", tourLog.getId(), difficulty.get());
 
-            int logId = tourLog.getId();
-            int tourId = tourLog.getTourId();
-
+            // Update the tour log object with current values
             LocalDateTime dateTime = LocalDateTime.of(date.get(), LocalTime.now());
             tourLog.setDateTime(dateTime);
             tourLog.setDifficulty(difficulty.get().trim());
@@ -187,17 +186,9 @@ public class TourLogDetailsViewModel {
             tourLog.setRating(rating.get());
             tourLog.setComment(comment.get());
 
-            DAL.getInstance().tourLogDao().update(tourLog, Arrays.asList(
-                    logId,
-                    tourId,
-                    tourLog.getDateTime(),
-                    tourLog.getComment(),
-                    tourLog.getDifficulty(),
-                    tourLog.getTotalDistance(),
-                    tourLog.getTotalTime(),
-                    tourLog.getRating()
-            ));
+            BL.getInstance().updateTourLog(tourLog);
 
+            // Notify listeners
             for (LogUpdatedListener listener : logUpdatedListeners) {
                 listener.onLogUpdated(tourLog);
             }

@@ -8,16 +8,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class BL {
 
     private static final Logger logger = LogManager.getLogger(BL.class);
 
     private final TourService tourService = new TourService();
+    private final TourLogService tourLogService = new TourLogService();
     private static boolean initialized = false;
     private static final BL instance = new BL();
     private final ReportService reportService = new ReportService();
@@ -58,6 +56,34 @@ public class BL {
 
     public void deleteTour(Tour tour) {
         tourService.deleteTour(tour);
+    }
+
+    public TourLog createTourLog(int tourId) {
+        return tourLogService.createTourLog(tourId);
+    }
+
+    public List<TourLog> getTourLogsByTourId(int tourId) {
+        return tourLogService.getTourLogsByTourId(tourId);
+    }
+
+    public Optional<TourLog> getTourLog(int id) {
+        return tourLogService.getTourLog(id);
+    }
+
+    public void updateTourLog(TourLog tourLog) {
+        tourLogService.updateTourLog(tourLog);
+    }
+
+    public void deleteTourLog(TourLog tourLog) {
+        tourLogService.deleteTourLog(tourLog);
+    }
+
+    public List<TourLog> findTourLogsBySearchText(String searchText) {
+        return tourLogService.findTourLogsBySearchText(searchText);
+    }
+
+    public List<TourLog> getAllTourLogs() {
+        return tourLogService.getAllTourLogs();
     }
 
     public void refreshTourApiData(Tour tour) {

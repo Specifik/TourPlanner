@@ -1,5 +1,6 @@
 package at.fhtw.tourplanner.viewmodel;
 
+import at.fhtw.tourplanner.bl.BL;
 import at.fhtw.tourplanner.dal.DAL;
 import at.fhtw.tourplanner.model.Tour;
 import at.fhtw.tourplanner.model.TourLog;
@@ -66,11 +67,9 @@ public class TourLogsViewModel {
         try {
             observableTourLogs.clear();
 
-            if (DAL.getInstance().tourLogDao() != null) {
-                List<TourLog> tourLogs = DAL.getInstance().tourLogDao().getByTourId(tourId);
-                observableTourLogs.addAll(tourLogs);
-                logger.debug("Loaded {} tour logs for tour ID: {}", tourLogs.size(), tourId);
-            }
+            List<TourLog> tourLogs = BL.getInstance().getTourLogsByTourId(tourId);
+            observableTourLogs.addAll(tourLogs);
+            logger.debug("Loaded {} tour logs for tour ID: {}", tourLogs.size(), tourId);
         } catch (Exception e) {
             logger.error("Failed to load tour logs for tour ID: {}", tourId, e);
         }
@@ -88,11 +87,13 @@ public class TourLogsViewModel {
 
     public void addNewTourLog() {
         Tour tour = currentTour.get();
-        if (tour != null && DAL.getInstance().tourLogDao() != null) {
+        if (tour != null) {
             try {
                 logger.info("Creating new tour log for tour: {}", tour.getName());
-                TourLog newLog = DAL.getInstance().tourLogDao().create(tour.getId());
-                refreshTourLogs(); // Reload to get the fresh list
+
+                TourLog newLog = BL.getInstance().createTourLog(tour.getId());
+
+                refreshTourLogs(); // Reload list
                 openTourLogDetails(newLog);
                 logger.info("New tour log created with ID: {}", newLog.getId());
             } catch (Exception e) {
@@ -102,10 +103,12 @@ public class TourLogsViewModel {
     }
 
     public void deleteTourLog(TourLog tourLog) {
-        if (tourLog != null && DAL.getInstance().tourLogDao() != null) {
+        if (tourLog != null) {
             try {
                 logger.info("Deleting tour log ID: {}", tourLog.getId());
-                DAL.getInstance().tourLogDao().delete(tourLog);
+
+                BL.getInstance().deleteTourLog(tourLog);
+
                 refreshTourLogs();
                 logger.info("Tour log deleted successfully");
             } catch (Exception e) {

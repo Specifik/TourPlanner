@@ -124,7 +124,7 @@ public class TourOverviewViewModel {
             try {
                 logger.info("Deleting tour: {}", tour.getName());
                 selectedTour.set(null);
-                DAL.getInstance().tourDao().delete(tour);
+                BL.getInstance().deleteTour(tour);
                 refreshTours();
                 logger.info("Tour deleted successfully: {}", tour.getName());
             } catch (Exception e) {

@@ -53,7 +53,6 @@ public class TourLog implements Serializable {
     public TourLog(int id, int tourId, LocalDateTime dateTime, String comment, String difficulty,
                    double totalDistance, int totalTime, int rating) {
         this.id = id;
-        // this.tour = ??? // This constructor is problematic as it can't set the Tour object from tourId easily without a DAO lookup
         this.dateTime = dateTime;
         this.comment = comment;
         this.difficulty = difficulty;
@@ -62,7 +61,6 @@ public class TourLog implements Serializable {
         this.rating = rating;
     }
 
-    // New constructor for testing and general use when ID is auto-generated
     public TourLog(Tour tour, LocalDateTime dateTime, String comment, String difficulty,
                    double totalDistance, int totalTime, int rating) {
         this.tour = tour;
